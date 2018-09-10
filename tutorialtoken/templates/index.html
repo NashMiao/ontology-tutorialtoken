@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Token</title>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    {{ JSGlue.include() }}
+</head>
+<body>
+<div id="vue-app">
+    <el-row>
+        <el-button type="primary" round @click="getName">Token Name</el-button>
+    </el-row>
+</div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el: '#vue-app',
+        data: function () {
+            return {visible: false, a: "aa"}
+        },
+        methods: {
+            getName() {
+                let url = Flask.url_for("get_name");
+                axios.get(url).then(function (response) {
+                    let tokenName = response.data.results;
+                    this.$notify({
+                        title: 'Token',
+                        message: tokenName,
+                        duration: 0
+                    });
+                })
+            }
+        }
+    });
+</script>
+</html>
