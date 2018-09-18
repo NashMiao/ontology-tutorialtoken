@@ -106,7 +106,35 @@
         </el-tab-pane>
 
         <el-tab-pane label="Token TransferMulti">
-            TransferMulti
+            <el-form :model="dynamicValidateForm" ref="dynamicValidateForm" label-width="100px" class="demo-dynamic">
+                <el-form-item
+                        prop="email"
+                        label="邮箱"
+                        :rules="[
+      { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+      { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+    ]"
+                >
+                    <el-input v-model="dynamicValidateForm.email"></el-input>
+                </el-form-item>
+                <el-form-item
+                        v-for="(domain, index) in dynamicValidateForm.domains"
+                        :label="'域名' + index"
+                        :key="domain.key"
+                        :prop="'domains.' + index + '.value'"
+                        :rules="{
+      required: true, message: '域名不能为空', trigger: 'blur'
+    }"
+                >
+                    <el-input v-model="domain.value"></el-input>
+                    <el-button @click.prevent="removeDomain(domain)">删除</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitForm('dynamicValidateForm')">提交</el-button>
+                    <el-button @click="addDomain">新增域名</el-button>
+                    <el-button @click="resetForm('dynamicValidateForm')">重置</el-button>
+                </el-form-item>
+            </el-form>
         </el-tab-pane>
 
         <el-tab-pane label="Token Approve">
@@ -150,13 +178,58 @@
         </el-tab-pane>
 
         <el-tab-pane label="Token Allowance">
-            Allowance
+            <el-row :gutter="20">
+                <el-col :span="11">
+                    <div class="grid-content bg-purple-light">
+                        <el-row>
+                            <el-input
+                                    size="medium"
+                                    type="string"
+                                    placeholder="base58 encode address"
+                                    suffix-icon="el-icon-location"
+                                    v-model="inputAllowanceOwner">
+                                <template slot="prepend">owner</template>
+                            </el-input>
+                        </el-row>
+                    </div>
+                </el-col>
+                <el-col :span="10">
+                    <div class="grid-content bg-purple">
+                        <el-row>
+                            <el-input
+                                    size="medium"
+                                    type="string"
+                                    placeholder="base58 encode address"
+                                    suffix-icon="el-icon-location"
+                                    v-model="inputAllowanceSpender">
+                                <template slot="prepend">spender</template>
+                            </el-input>
+                        </el-row>
+                    </div>
+                </el-col>
+                <el-col :span="2">
+                    <div class="grid-content bg-purple">
+                        <el-row>
+                            <el-button type="primary" round @click="allowance">allowance</el-button>
+                        </el-row>
+                    </div>
+                </el-col>
+            </el-row>
         </el-tab-pane>
         <el-tab-pane label="Token TransferFrom">
             TransferFrom
         </el-tab-pane>
-        <el-tab-pane label="DApp Setting">
-            Setting
+
+        <el-tab-pane label="DApp Settings">
+            <div class="block">
+                <span class="demonstration">Networks: </span>
+                <el-cascader
+                        expand-trigger="hover"
+                        :options="options"
+                        v-model="networkSelected"
+                        @change="networkChange">
+                </el-cascader>
+            </div>
         </el-tab-pane>
     </el-tabs>
 </div>
@@ -175,10 +248,51 @@
                 eventInfoSelect: "",
                 eventKey: "",
                 inputTransferTo: "",
-                inputTransferAmount: ""
+                inputTransferAmount: "",
+                inputAllowanceOwner: "",
+                inputAllowanceSpender: "",
+                dynamicValidateForm: {
+                    domains: [{
+                        value: ''
+                    }],
+                    email: ''
+                },
+                options: [{
+                    value: 'MainNet',
+                    label: 'Main Network',
+                }, {
+                    value: 'TestNet',
+                    label: 'Polaris Test Network'
+                },
+                    {
+                        value: 'Localhost',
+                        label: 'Localhost 20336'
+                    }],
+                networkSelected: ['TestNet']
             }
         },
         methods: {
+            networkChange(value) {
+                let msg = '';
+                if (value[0] === 'MainNet') {
+                    msg = 'Connecting to Main Network'
+                }
+                else if (value[0] === 'TestNet') {
+                    msg = 'Connecting to Polaris Test Network'
+                }
+                else if (value[0] === 'Localhost') {
+                    msg = 'Connecting to Localhost'
+                }
+                else {
+                    return
+                }
+                this.$notify({
+                    title: 'Network Change',
+                    type: 'warning',
+                    message: msg,
+                    duration: 2000
+                })
+            },
             queryEvent() {
                 if (this.eventInfoSelect === "") {
                     this.$notify({
@@ -261,13 +375,23 @@
                 let url = Flask.url_for("get_decimal");
                 let self = this;
                 axios.get(url).then(function (response) {
-                    let tokenSymbol = response.data.result;
-                    self.$notify({
-                        title: "Token Decimal",
-                        type: 'success',
-                        message: tokenSymbol,
-                        duration: 0
-                    })
+                    if (response.status === 200) {
+                        let tokenSymbol = response.data.result;
+                        self.$notify({
+                            title: "Token Decimals",
+                            type: 'success',
+                            message: tokenSymbol,
+                            duration: 0
+                        })
+                    }
+                    else {
+                        self.$notify({
+                            title: "Token Decimals",
+                            type: 'error',
+                            message: 'query token decimals failed',
+                            duration: 0
+                        })
+                    }
                 })
             },
             transfer() {
@@ -279,7 +403,7 @@
                             confirmButtonText: '确定',
                             cancelButtonText: '取消',
                             type: 'warning',
-                            duration: 500
+                            duration: 0
                         }).then(() => {
                                 axios.post(url, {
                                     b58_to_address: self.inputTransferTo,
@@ -290,7 +414,7 @@
                                         self.$message({
                                             type: 'success',
                                             message: 'Transfer successfully： '.concat(tx_hash).concat('!'),
-                                            duration: 1500
+                                            duration: 2000
                                         });
                                     }
                                     else {
@@ -332,7 +456,7 @@
                         title: "Transfer Error",
                         type: 'error',
                         message: "Please input the address.",
-                        duration: 500
+                        duration: 1200
                     })
                 }
                 else {
@@ -340,15 +464,92 @@
                         title: "Transfer Error",
                         type: 'error',
                         message: "Please input the correct base58 encode address.",
-                        duration: 500
+                        duration: 1200
+                    })
+                }
+            },
+            allowance() {
+                let url = Flask.url_for("allowance");
+                let self = this;
+                if (self.inputAllowanceOwner.length === 34 && self.inputAllowanceSpender.length === 34) {
+                    axios.post(url, {
+                        b58_owner_address: self.inputAllowanceOwner,
+                        b58_spender_address: self.inputAllowanceSpender
+                    }).then(function (response) {
+                        if (response.status === 200) {
+                            self.$notify({
+                                title: 'Allowance',
+                                type: 'success',
+                                message: response.data.result,
+                                duration: 0
+                            });
+                        }
+                        else {
+                            self.$notify({
+                                title: 'Allowance',
+                                type: 'error',
+                                message: 'query allowance failed',
+                                duration: 1200
+                            });
+                        }
+                    })
+                }
+                else if (self.inputAllowanceSpender.length === 0) {
+                    self.$notify({
+                        title: 'Allowance Error',
+                        type: 'error',
+                        message: 'Please input the spender address',
+                        duration: 1200
+                    })
+                }
+                else if (self.inputAllowanceOwner.length === 0) {
+                    self.$notify({
+                        title: 'Allowance Error',
+                        type: 'error',
+                        message: 'Please input the owner address',
+                        duration: 1200
+                    })
+                }
+                else {
+                    self.$notify({
+                        title: "Transfer Error",
+                        type: 'error',
+                        message: "Please input the correct base58 encode address.",
+                        duration: 1200
                     })
                 }
             },
             approve() {
 
                 console.log('TODO');
+            },
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        alert('submit!');
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            removeDomain(item) {
+                var index = this.dynamicValidateForm.domains.indexOf(item);
+                if (index !== -1) {
+                    this.dynamicValidateForm.domains.splice(index, 1)
+                }
+            },
+            addDomain() {
+                this.dynamicValidateForm.domains.push({
+                    value: '',
+                    key: Date.now()
+                });
             }
         }
-    });
+    })
+    ;
 </script>
 </html>

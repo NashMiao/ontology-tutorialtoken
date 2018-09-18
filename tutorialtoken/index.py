@@ -58,7 +58,15 @@ def transfer():
     return jsonify({'result': result}), 200
 
 
-@app.route("/")
+@app.route('/allowance', methods=['POST'])
+def allowance():
+    b58_owner_address = request.json.get('b58_owner_address')
+    b58_spender_address = request.json.get('b58_spender_address')
+    result = oep4.allowance(b58_owner_address, b58_spender_address)
+    return jsonify({'result': result}), 200
+
+
+@app.route('/')
 def index():
     return render_template('index.html')
 
