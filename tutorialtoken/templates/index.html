@@ -219,17 +219,31 @@
         <el-tab-pane label="Token TransferFrom">
             TransferFrom
         </el-tab-pane>
-
         <el-tab-pane label="DApp Settings">
-            <div class="block">
-                <span class="demonstration">Networks: </span>
-                <el-cascader
-                        expand-trigger="hover"
-                        :options="options"
-                        v-model="networkSelected"
-                        @change="networkChange">
-                </el-cascader>
-            </div>
+            <el-row :gutter="20">
+                <el-col :span="8">
+                    <div class="block">
+                        <span class="demonstration">Networks:&nbsp;</span>
+                        <el-cascader
+                                expand-trigger="hover"
+                                :options="networkOptions"
+                                v-model="networkSelected"
+                                @change="networkChange">
+                        </el-cascader>
+                    </div>
+                </el-col>
+                <el-col :span="8">
+                    <div class="block">
+                        <span class="demonstration">Accounts:&nbsp;</span>
+                        <el-cascader
+                                expand-trigger="hover"
+                                :options="accountOptions"
+                                v-model="accountSelected"
+                                @change="accountChange">
+                        </el-cascader>
+                    </div>
+                </el-col>
+            </el-row>
         </el-tab-pane>
     </el-tabs>
 </div>
@@ -257,7 +271,7 @@
                     }],
                     email: ''
                 },
-                options: [{
+                networkOptions: [{
                     value: 'MainNet',
                     label: 'Main Network',
                 }, {
@@ -268,7 +282,8 @@
                         value: 'Localhost',
                         label: 'Localhost 20336'
                     }],
-                networkSelected: ['TestNet']
+                networkSelected: ['TestNet'],
+                accountSelected: ''
             }
         },
         methods: {
@@ -286,12 +301,59 @@
                 else {
                     return
                 }
-                this.$notify({
-                    title: 'Network Change',
-                    type: 'warning',
-                    message: msg,
-                    duration: 2000
-                })
+                let url = Flask.url_for('change_net');
+                let self = this;
+                axios.post(url, {
+                    network_selected: self.networkSelected
+                }).then(function (response) {
+                    self.$notify({
+                        title: 'Network Change',
+                        type: 'success',
+                        message: msg,
+                        duration: 2000
+                    })
+                }).catch(error => {
+                    if (error.response.status === 400) {
+                        self.$notify({
+                            title: 'Network Change',
+                            type: 'warning',
+                            message: error.response.data.result,
+                            duration: 2000
+                        })
+                    }
+                    else if (error.response.status === 409) {
+                        self.$notify({
+                            title: 'Network Change',
+                            type: 'warning',
+                            message: error.response.data.result,
+                            duration: 2000
+                        })
+                    }
+                    else if (error.response.status === 500) {
+                        self.$notify({
+                            title: 'Network Change',
+                            type: 'warning',
+                            message: error.response.data.result,
+                            duration: 2000
+                        })
+                    }
+                    else if (error.response.status === 501) {
+                        self.$notify({
+                            title: 'Network Change',
+                            type: 'warning',
+                            message: error.response.data.result,
+                            duration: 2000
+                        })
+                    }
+                    else {
+                        this.$notify({
+                            title: 'Network Change',
+                            type: 'error',
+                            message: 'Failed',
+                            duration: 2000
+                        })
+                    }
+                });
             },
             queryEvent() {
                 if (this.eventInfoSelect === "") {

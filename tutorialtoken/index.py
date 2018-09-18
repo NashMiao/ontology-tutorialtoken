@@ -2,18 +2,60 @@ from flask import Flask, jsonify, request, render_template
 from flask_jsglue import JSGlue
 from ontology.account.account import Account
 from ontology.crypto.signature_scheme import SignatureScheme
+from ontology.exception.exception import SDKException
+
+import tutorialtoken.default_settings
 
 from ontology.ont_sdk import OntologySdk
 
 app = Flask(__name__)
+app.config.from_object('tutorialtoken.default_settings')
 jsglue = JSGlue(app)
 
-remote_rpc_address = "http://polaris3.ont.io:20336"
 sdk = OntologySdk()
-sdk.set_rpc(remote_rpc_address)
+sdk.set_rpc(app.config['DEFAULT_REMOTE_RPC_ADDRESS'])
 contract_address = '6fe70af535887a820a13cfbaff6b0b505f855e5c'
 oep4 = sdk.neo_vm().oep4()
 oep4.set_contract_address(contract_address)
+
+
+@app.route('/change_net', methods=['POST'])
+def change_net():
+    network_selected = request.json.get('network_selected')[0]
+    if network_selected == 'MainNet':
+        remote_rpc_address = 'http://dappnode1.ont.io:20336'
+        sdk.set_rpc(remote_rpc_address)
+        sdk_rpc_address = sdk.get_rpc().addr
+        if sdk_rpc_address != remote_rpc_address:
+            result = ''.join(['remote rpc address set failed. the rpc address now used is ', sdk_rpc_address])
+            return jsonify({'result': result}), 409
+    elif network_selected == 'TestNet':
+        remote_rpc_address = 'http://polaris3.ont.io:20336'
+        sdk.set_rpc(remote_rpc_address)
+        sdk_rpc_address = sdk.get_rpc().addr
+        if sdk_rpc_address != remote_rpc_address:
+            result = ''.join(['remote rpc address set failed. the rpc address now used is ', sdk_rpc_address])
+            return jsonify({'result': result}), 409
+    elif network_selected == 'Localhost':
+        remote_rpc_address = 'http://localhost:20336'
+        sdk.set_rpc(remote_rpc_address)
+        old_remote_rpc_address = sdk.get_rpc()
+        sdk_rpc_address = sdk.get_rpc().addr
+        if sdk_rpc_address != remote_rpc_address:
+            result = ''.join(['remote rpc address set failed. the rpc address now used is ', sdk_rpc_address])
+            return jsonify({'result': result}), 409
+        try:
+            sdk.rpc.get_version()
+        except SDKException as e:
+            sdk.set_rpc(old_remote_rpc_address)
+            error_msg = 'Other Error, ConnectionError'
+            if error_msg in e.args[1]:
+                return jsonify({'result': 'Connection to localhost node failed.'}), 400
+            else:
+                return jsonify({'result': e.args[1]}), 500
+    else:
+        return jsonify({'result': 'unsupported network.'}), 501
+    return jsonify({'result': 'succeed'}), 200
 
 
 @app.route('/getSmartContractEvent', methods=['POST'])
