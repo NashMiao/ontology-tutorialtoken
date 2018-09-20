@@ -1,60 +1,116 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, url_for
 from flask_jsglue import JSGlue
-from ontology.account.account import Account
+
 from ontology.crypto.signature_scheme import SignatureScheme
+from ontology.wallet.wallet_manager import WalletManager
 from ontology.exception.exception import SDKException
-
-import tutorialtoken.default_settings
-
+from ontology.account.account import Account
 from ontology.ont_sdk import OntologySdk
+from ontology.utils import util
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 app.config.from_object('tutorialtoken.default_settings')
-jsglue = JSGlue(app)
+jsglue = JSGlue()
+jsglue.init_app(app)
 
 sdk = OntologySdk()
 sdk.set_rpc(app.config['DEFAULT_REMOTE_RPC_ADDRESS'])
-contract_address = '6fe70af535887a820a13cfbaff6b0b505f855e5c'
 oep4 = sdk.neo_vm().oep4()
-oep4.set_contract_address(contract_address)
+oep4.set_contract_address(app.config['DEFAULT_CONTRACT_ADDRESS'])
+wallet_manager = WalletManager()
+
+
+@app.route('/get_accounts')
+def get_accounts():
+    account_list = wallet_manager.wallet_in_mem.get_accounts()
+    address_list = list()
+    for acct in account_list:
+        address_list.append(acct.get_address_base58())
+    return jsonify({'result': address_list}), 200
+
+
+@app.route('/create_account')
+def create_account():
+    hex_private_key = util.get_random_bytes(32).hex()
+    account = Account(hex_private_key, SignatureScheme.SHA256withECDSA)
+    b58_address = account.get_address_base58()
+    return jsonify({'b58_address': b58_address, 'hex_private_key': hex_private_key})
+
+
+@app.route('/import_account', methods=['POST'])
+def import_account():
+    label = request.json.get('label')
+    password = request.json.get('password')
+    hex_private_key = request.json.get('hex_private_key')
+    account = wallet_manager.create_account_from_private_key(label, password, hex_private_key)
+    b58_address = account.get_address_base58()
+    # account_list = wallet_manager.wallet_in_mem.get_accounts()
+    # for acct in account_list:
+    #     if acct.get_address_base58() == b58_address:
+    #         return jsonify({'result': 'account has existed.'}), 409
+    # wallet_manager.wallet_in_mem.add_account(account)
+    return jsonify({'result': b58_address}), 200
+
+
+@app.route('/account_change', methods=['POST'])
+def account_change():
+    b58_address_selected = request.json.get('b58_address_selected')
+    print(b58_address_selected)
+    print(wallet_manager.wallet_in_mem.get_accounts())
+    try:
+        wallet_manager.wallet_in_mem.set_default_account_by_address(b58_address_selected)
+        return jsonify({'result': 'change successful'}), 200
+    except SDKException:
+        return jsonify({'result': 'Invalid address'}), 400
+
+
+@app.route('/set_contract_address', methods=['POST'])
+def set_contract_address():
+    contract_address = request.json.get('contract_address')
+    oep4.set_contract_address(contract_address)
+    return jsonify({'result': contract_address}), 200
 
 
 @app.route('/change_net', methods=['POST'])
 def change_net():
-    network_selected = request.json.get('network_selected')[0]
+    network_selected = request.json.get('network_selected')
     if network_selected == 'MainNet':
         remote_rpc_address = 'http://dappnode1.ont.io:20336'
-        sdk.set_rpc(remote_rpc_address)
-        sdk_rpc_address = sdk.get_rpc().addr
-        if sdk_rpc_address != remote_rpc_address:
-            result = ''.join(['remote rpc address set failed. the rpc address now used is ', sdk_rpc_address])
-            return jsonify({'result': result}), 409
+        with app.app_context() as context:
+            sdk.set_rpc(remote_rpc_address)
+            sdk_rpc_address = sdk.get_rpc().addr
+            if sdk_rpc_address != remote_rpc_address:
+                result = ''.join(['remote rpc address set failed. the rpc address now used is ', sdk_rpc_address])
+                return jsonify({'result': result}), 409
     elif network_selected == 'TestNet':
         remote_rpc_address = 'http://polaris3.ont.io:20336'
-        sdk.set_rpc(remote_rpc_address)
-        sdk_rpc_address = sdk.get_rpc().addr
-        if sdk_rpc_address != remote_rpc_address:
-            result = ''.join(['remote rpc address set failed. the rpc address now used is ', sdk_rpc_address])
-            return jsonify({'result': result}), 409
+        with app.app_context() as context:
+            sdk.set_rpc(remote_rpc_address)
+            sdk_rpc_address = sdk.get_rpc().addr
+            if sdk_rpc_address != remote_rpc_address:
+                result = ''.join(['remote rpc address set failed. the rpc address now used is ', sdk_rpc_address])
+                return jsonify({'result': result}), 409
     elif network_selected == 'Localhost':
         remote_rpc_address = 'http://localhost:20336'
-        sdk.set_rpc(remote_rpc_address)
-        old_remote_rpc_address = sdk.get_rpc()
-        sdk_rpc_address = sdk.get_rpc().addr
-        if sdk_rpc_address != remote_rpc_address:
-            result = ''.join(['remote rpc address set failed. the rpc address now used is ', sdk_rpc_address])
-            return jsonify({'result': result}), 409
-        try:
-            sdk.rpc.get_version()
-        except SDKException as e:
-            sdk.set_rpc(old_remote_rpc_address)
-            error_msg = 'Other Error, ConnectionError'
-            if error_msg in e.args[1]:
-                return jsonify({'result': 'Connection to localhost node failed.'}), 400
-            else:
-                return jsonify({'result': e.args[1]}), 500
+        with app.app_context() as context:
+            sdk.set_rpc(remote_rpc_address)
+            old_remote_rpc_address = sdk.get_rpc()
+            sdk_rpc_address = sdk.get_rpc().addr
+            if sdk_rpc_address != remote_rpc_address:
+                result = ''.join(['remote rpc address set failed. the rpc address now used is ', sdk_rpc_address])
+                return jsonify({'result': result}), 409
+            try:
+                sdk.rpc.get_version()
+            except SDKException as e:
+                sdk.set_rpc(old_remote_rpc_address)
+                error_msg = 'Other Error, ConnectionError'
+                if error_msg in e.args[1]:
+                    return jsonify({'result': 'Connection to localhost node failed.'}), 400
+                else:
+                    return jsonify({'result': e.args[1]}), 500
     else:
         return jsonify({'result': 'unsupported network.'}), 501
+    oep4 = sdk.neo_vm().oep4()
     return jsonify({'result': 'succeed'}), 200
 
 
@@ -92,8 +148,10 @@ def get_decimal():
 def transfer():
     b58_to_address = request.json.get('b58_to_address')
     amount = int(request.json.get('amount'))
-    private_key1 = '523c5fcf74823831756f0bcb3634234f10b3beb1c05595058534577752ad2d9f'
-    from_acct = Account(private_key1, SignatureScheme.SHA256withECDSA)
+    try:
+        from_acct = account_list[0]
+    except IndexError:
+        return jsonify({'result': 'Please import an account'}), 400
     gas_limit = 20000000
     gas_price = 500
     result = oep4.transfer(from_acct, b58_to_address, amount, from_acct, gas_limit, gas_price)
