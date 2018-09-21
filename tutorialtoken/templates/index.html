@@ -105,7 +105,40 @@
         </el-tab-pane>
 
         <el-tab-pane label="Token TransferMulti">
-            Token TransferMulti
+            <el-form :model="multiTransferForm" ref="multiTransferForm" label-width="100px" class="demo-dynamic">
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item
+                                prop="email"
+                                label="From">
+                            <el-input v-model="multiTransferForm.email"></el-input>
+                            <el-button @click.prevent="removeDomain(domain)">Delete</el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item
+                                v-for="(domain, index) in multiTransferForm.domains"
+                                :label="'To ' + index"
+                                :key="toAddress.key"
+                                :prop="'toAddress.' + index + '.value'">
+                            <el-input v-model="domain.value"></el-input>
+                            <el-button @click.prevent="removeDomain(domain)">Delete</el-button>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-form-item>
+                    <el-col :spam="6">
+                        <el-button type="success" @click="addDomain">New From-address</el-button>
+                    </el-col>
+                    <el-col :spam="6">
+                        <el-button type="primary" @click="addToAddress">New To-address</el-button>
+                    </el-col>
+                    <el-button type="success" @click="submitForm('multiTransferForm')">Submit</el-button>
+                    <el-button type="warning" @click="resetForm('multiTransferForm')">Reset</el-button>
+                </el-form-item>
+            </el-form>
+
+
         </el-tab-pane>
 
         <el-tab-pane label="Token Approve">
@@ -192,37 +225,37 @@
         </el-tab-pane>
 
         <el-tab-pane label="DApp Settings">
-            <div style="margin-bottom: 15px;">
-                <el-row :gutter="5">
-                    <el-col :span="8">
-                        <div class="grid-content bg-purple">
-                            <span class="demonstration">Default Networks:&nbsp;</span>
-                            <el-cascader
-                                    expand-trigger="hover"
-                                    :options="networkOptions"
-                                    v-model="networkSelected"
-                                    @change="networkChange">
-                            </el-cascader>
-                        </div>
-                    </el-col>
-                    <el-col :span="8">
-                        <div class="block">
-                            <span class="demonstration">Default Account:&nbsp;</span>
-                            <el-cascader
-                                    expand-trigger="hover"
-                                    :options="accountOptions"
-                                    v-model="accountSelected"
-                                    @change="accountChange">
-                            </el-cascader>
-                        </div>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-input
-                                v-model="b58AddressSelected"
-                                :disabled="true">
-                        </el-input>
-                    </el-col>
-                </el-row>
+            <div style="margin-bottom: 5px;">
+                <el-form :label-position="labelPosition" label-width="150px" :model="settingForm">
+                    <el-row :gutter="5">
+                        <el-col :span="8">
+                            <el-form-item label="Default Networks">
+                                <el-cascader
+                                        expand-trigger="hover"
+                                        :options="settingForm.networkOptions"
+                                        v-model="settingForm.networkSelected"
+                                        @change="networkChange">
+                                </el-cascader>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-form-item label="Default Account">
+                                <el-cascader
+                                        expand-trigger="hover"
+                                        :options="settingForm.accountOptions"
+                                        v-model="settingForm.accountSelected"
+                                        @change="accountChange">
+                                </el-cascader>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-input
+                                    v-model="settingForm.b58AddressSelected"
+                                    :disabled="true">
+                            </el-input>
+                        </el-col>
+                    </el-row>
+                </el-form>
             </div>
             <div style="margin-bottom: 15px;">
                 <el-row :gutter="20">

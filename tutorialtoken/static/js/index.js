@@ -5,29 +5,71 @@ new Vue({
             visible: false,
             privateKeyDialogVisible: false,
             newHexPrivateKey: '',
-            eventInfoSelect: "",
-            eventKey: "",
-            inputTransferTo: "",
-            inputTransferAmount: "",
-            inputAllowanceOwner: "",
-            inputAllowanceSpender: "",
-            networkOptions: [{
-                value: 'MainNet',
-                label: 'Main Network',
-            }, {
-                value: 'TestNet',
-                label: 'Polaris Test Network'
-            }, {
-                value: 'Localhost',
-                label: 'Localhost 20336'
-            }],
+            eventInfoSelect: '',
+            eventKey: '',
+            inputTransferTo: '',
+            inputTransferAmount: '',
+            inputAllowanceOwner: '',
+            inputAllowanceSpender: '',
+            labelPosition: 'right',
+            settingForm: {
+                networkOptions: [{
+                    value: 'MainNet',
+                    label: 'Main Network',
+                }, {
+                    value: 'TestNet',
+                    label: 'Polaris Test Network'
+                }, {
+                    value: 'Localhost',
+                    label: 'Localhost 20336'
+                }],
+            },
             networkSelected: ['TestNet'],
             accountOptions: [],
-            accountSelected: '',
-            b58AddressSelected: ''
+            accountSelected: [],
+            b58AddressSelected: '',
+            multiTransferForm: {
+                toAddress: [{
+                    value: ''
+                }],
+                domains: [{
+                    value: ''
+                }],
+                email: ''
+            },
         }
     },
     methods: {
+        submitForm(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    alert('submit!');
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        resetForm(formName) {
+            this.$refs[formName].resetFields();
+        },
+        removeDomain(item) {
+            var index = this.multiTransferForm.domains.indexOf(item)
+            if (index !== -1) {
+                this.multiTransferForm.domains.splice(index, 1)
+            }
+        },
+        addToAddress() {
+            this.multiTransferForm.toAddress.push({
+                value: ''
+            })
+        },
+        addDomain() {
+            this.multiTransferForm.domains.push({
+                value: '',
+                key: Date.now()
+            });
+        },
         async getName() {
             let url = Flask.url_for("get_name");
             let response = await axios.get(url);
@@ -75,17 +117,19 @@ new Vue({
         async getAccounts() {
             let url = Flask.url_for('get_accounts');
             let response = await axios.get(url);
-            this.accountOptions = [];
-            console.log(response.data.result);
+            this.settingForm.accountOptions = [];
             for (i = 0; i < response.data.result.length; i++) {
-                this.accountOptions.push({value: response.data.result[i].b58_address, label: response.data.result[i].label});
+                this.settingForm.accountOptions.push({
+                    value: response.data.result[i].b58_address,
+                    label: response.data.result[i].label
+                });
             }
         },
         async accountChange(value) {
             try {
                 let url = Flask.url_for('account_change');
                 let response = await axios.post(url, {'b58_address_selected': value[0]});
-                this.b58AddressSelected = value[0];
+                this.settingForm.b58AddressSelected = value[0];
                 this.$message({
                     type: 'success',
                     message: response.data.result,
@@ -173,10 +217,9 @@ new Vue({
             }
             let change_net_url = Flask.url_for('change_net');
             try {
-                let response = await
-                    axios.post(change_net_url, {
-                        network_selected: self.networkSelected[0]
-                    });
+                let response = await axios.post(change_net_url, {
+                    network_selected: value[0]
+                });
                 this.$notify({
                     title: 'Network Change',
                     type: 'success',

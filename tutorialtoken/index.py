@@ -40,9 +40,8 @@ def create_account():
     password = request.json.get('password')
     label = request.json.get('label')
     hex_private_key = util.get_random_bytes(32).hex()
-    account = Account(hex_private_key, SignatureScheme.SHA256withECDSA)
-    b58_address = account.get_address_base58()
     wallet_manager.create_account_from_private_key(label, password, hex_private_key)
+    wallet_manager.save()
     return jsonify({'hex_private_key': hex_private_key})
 
 
@@ -57,6 +56,7 @@ def import_account():
     except ValueError as e:
         return jsonify({'msg': 'account exists.'}), 500
     b58_address = account.get_address()
+    wallet_manager.save()
     return jsonify({'result': b58_address}), 200
 
 
