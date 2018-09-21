@@ -29,7 +29,7 @@
                                 v-model="eventKey"
                                 class="input-with-select">
                             <el-select v-model="eventInfoSelect" slot="prepend" placeholder="Select">
-                                <el-option label="State" value="State"></el-option>z
+                                <el-option label="State" value="State"></el-option>
                                 <el-option label="GasConsumed" value="GasConsumed"></el-option>
                                 <el-option label="Notify" value="Notify"></el-option>
                             </el-select>
@@ -218,43 +218,58 @@
                     </el-col>
                 </el-row>
             </div>
-
-            <el-row :gutter="20">
-                <el-col :span="8">
-                    <div class="grid-content bg-purple">
-                        <el-row>
-                            <el-button type="success" round @click="createAccount">Create Account</el-button>
-                        </el-row>
-                    </div>
-                    <el-dialog
-                            title="Create successful"
-                            width="30%"
-                            :visible.sync="privateKeyDialogVisible"
-                            :close-on-click-modal="false"
-                            :show-close="false"
-                            :close-on-press-escape="false">
-                        <span>private key:<td id="hex_private_key"></td></span>
-                        <span slot="footer" class="dialog-footer">
+            <div style="margin-bottom: 15px;">
+                <el-row :gutter="20">
+                    <el-col :span="8">
+                        <div class="grid-content bg-purple">
+                            <el-row>
+                                <el-button type="success" round @click="createAccount">Create Account</el-button>
+                            </el-row>
+                        </div>
+                        <el-dialog
+                                title="Create successful"
+                                width="35%"
+                                :visible.sync="privateKeyDialogVisible"
+                                :close-on-click-modal="false"
+                                :show-close="false"
+                                :close-on-press-escape="false">
+                            <div class="block" style="margin-bottom: 15px;">
+                                <el-row :gutter="5">
+                                    <el-col :span="4">
+                                        private key:&nbsp;
+                                    </el-col>
+                                    <el-col :span="18">
+                                        <el-input
+                                                placeholder="请输入内容"
+                                                v-model="hex_private_key"
+                                                size="small"
+                                                :disabled="true">
+                                        </el-input>
+                                    </el-col>
+                                </el-row>
+                            </div>
+                            <span slot="footer" class="dialog-footer">
                             <el-button type="primary" @click="privateKeyDialogVisible = false">Confirm</el-button>
                         </span>
-                    </el-dialog>
-                </el-col>
-                <el-col :span="8">
-                    <div class="grid-content bg-purple">
-                        <el-row>
-                            <el-button type="primary" round @click="importAccount">Import Account</el-button>
-                        </el-row>
-                    </div>
-                </el-col>
-                <el-col :span="8">
-                    <div class="grid-content bg-purple">
-                        <el-row>
-                            <el-button type="warning" round @click="removeAccount">Remove Account</el-button>
-                        </el-row>
-                    </div>
-                </el-col>
+                        </el-dialog>
+                    </el-col>
+                    <el-col :span="8">
+                        <div class="grid-content bg-purple">
+                            <el-row>
+                                <el-button type="primary" round @click="importAccount">Import Account</el-button>
+                            </el-row>
+                        </div>
+                    </el-col>
+                    <el-col :span="8">
+                        <div class="grid-content bg-purple">
+                            <el-row>
+                                <el-button type="warning" round @click="removeAccount">Remove Account</el-button>
+                            </el-row>
+                        </div>
+                    </el-col>
+                </el-row>
+            </div>
 
-            </el-row>
         </el-tab-pane>
     </el-tabs>
 </div>

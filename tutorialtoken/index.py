@@ -22,7 +22,7 @@ wallet_manager = WalletManager()
 
 @app.route('/get_accounts')
 def get_accounts():
-    account_list = wallet_manager.wallet_in_mem.get_accounts()
+    account_list = wallet_manager.get_wallet().get_accounts()
     address_list = list()
     for acct in account_list:
         address_list.append(acct.get_address_base58())
@@ -55,10 +55,9 @@ def import_account():
 @app.route('/account_change', methods=['POST'])
 def account_change():
     b58_address_selected = request.json.get('b58_address_selected')
-    print(b58_address_selected)
-    print(wallet_manager.wallet_in_mem.get_accounts())
     try:
         wallet_manager.wallet_in_mem.set_default_account_by_address(b58_address_selected)
+        wallet_manager.get_default_account()
         return jsonify({'result': 'change successful'}), 200
     except SDKException:
         return jsonify({'result': 'Invalid address'}), 400
