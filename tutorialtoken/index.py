@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, jsonify, request, render_template, url_for
 from flask_jsglue import JSGlue
 
@@ -18,6 +20,9 @@ sdk.set_rpc(app.config['DEFAULT_REMOTE_RPC_ADDRESS'])
 oep4 = sdk.neo_vm().oep4()
 oep4.set_contract_address(app.config['DEFAULT_CONTRACT_ADDRESS'])
 wallet_manager = WalletManager()
+wallet_path = os.path.join(os.getcwd(), 'wallet', 'wallet.json')
+if os.path.isfile(wallet_path):
+    wallet_manager.open_wallet(wallet_path)
 
 
 @app.route('/get_accounts')
@@ -30,12 +35,15 @@ def get_accounts():
     return jsonify({'result': address_list}), 200
 
 
-@app.route('/create_account')
+@app.route('/create_account', methods=['POST'])
 def create_account():
+    password = request.json.get('password')
+    label = request.json.get('label')
     hex_private_key = util.get_random_bytes(32).hex()
     account = Account(hex_private_key, SignatureScheme.SHA256withECDSA)
     b58_address = account.get_address_base58()
-    return jsonify({'b58_address': b58_address, 'hex_private_key': hex_private_key})
+    wallet_manager.create_account_from_private_key(label, password, hex_private_key)
+    return jsonify({'hex_private_key': hex_private_key})
 
 
 @app.route('/import_account', methods=['POST'])
@@ -57,7 +65,6 @@ def account_change():
     b58_address_selected = request.json.get('b58_address_selected')
     try:
         wallet_manager.wallet_in_mem.set_default_account_by_address(b58_address_selected)
-        wallet_manager.get_default_account()
         return jsonify({'result': 'change successful'}), 200
     except SDKException:
         return jsonify({'result': 'Invalid address'}), 400

@@ -4,7 +4,7 @@ new Vue({
         return {
             visible: false,
             privateKeyDialogVisible: false,
-            hex_private_key: '523c5fcf74823831756f0bcb3634234f10b3beb1c05595058534577752ad2d9f',
+            newHexPrivateKey: '',
             eventInfoSelect: "",
             eventKey: "",
             inputTransferTo: "",
@@ -24,11 +24,10 @@ new Vue({
             networkSelected: ['TestNet'],
             accountOptions: [],
             accountSelected: '',
+            b58AddressSelected: ''
         }
     },
     methods: {
-        numberValidateForm() {
-        },
         async getName() {
             let url = Flask.url_for("get_name");
             let response = await axios.get(url);
@@ -68,22 +67,25 @@ new Vue({
                 })
             }
         },
-        async getAccounts(tab, event) {
+        tabClickHandler(tab, event) {
             if (tab.label === 'DApp Settings') {
-                let url = Flask.url_for('get_accounts');
-                let response = await axios.get(url);
-                this.accountOptions = [];
-                console.log(response);
-                for (i = 0; i < response.data.result.length; i++) {
-                    this.accountOptions.push({value: response.data.result[i], label: 'Account '.concat(i)});
-                }
+                this.getAccounts()
+            }
+        },
+        async getAccounts() {
+            let url = Flask.url_for('get_accounts');
+            let response = await axios.get(url);
+            this.accountOptions = [];
+            console.log(response.data.result);
+            for (i = 0; i < response.data.result.length; i++) {
+                this.accountOptions.push({value: response.data.result[i].b58_address, label: response.data.result[i].label});
             }
         },
         async accountChange(value) {
             try {
                 let url = Flask.url_for('account_change');
-                let response = await
-                    axios.post(url, {'b58_address_selected': value[0]});
+                let response = await axios.post(url, {'b58_address_selected': value[0]});
+                this.b58AddressSelected = value[0];
                 this.$message({
                     type: 'success',
                     message: response.data.result,
@@ -135,15 +137,7 @@ new Vue({
                     'label': label.value,
                     'password': password.value
                 });
-                let get_accounts_url = Flask.url_for('get_accounts');
-                let get_accounts_response = await axios.get(get_accounts_url);
-                this.accountOptions = [];
-                for (i = 0; i < get_accounts_response.data.result.length; i++) {
-                    self.accountOptions.push({
-                        value: get_accounts_response.data.result[i].b58_address,
-                        label: get_accounts_response.data.result[i].hex_private_key
-                    });
-                }
+                this.getAccounts();
                 this.$message.success({
                     message: 'Import successful',
                     duration: 1200
@@ -366,11 +360,36 @@ new Vue({
             console.log('TODO');
         },
         async createAccount() {
-            let url = Flask.url_for('create_account');
-            let response = await axios.get(url);
-            let b58_address = response.data.b58_address;
-            let hex_private_key = response.data.hex_private_key;
-            this.privateKeyDialogVisible = true;
+            let label = await this.$prompt('Account Label:', 'Import Account', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel'
+            }).catch(() => {
+                this.$message.warning('Import canceled');
+            });
+            if (label === undefined) {
+                return;
+            }
+            let password = await this.$prompt('Account Password', 'Import Account', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel'
+            }).catch(() => {
+                this.$message.warning('Import canceled');
+            });
+            if (password === undefined) {
+                return;
+            }
+            try {
+                let create_account_url = Flask.url_for('create_account');
+                let response = await axios.post(create_account_url, {
+                    'label': label.value,
+                    'password': password.value
+                });
+                this.newHexPrivateKey = response.data.hex_private_key;
+                this.privateKeyDialogVisible = true;
+                this.getAccounts();
+            } catch (error) {
+                console.log(error);
+            }
         },
         async queryEvent() {
             if (this.eventInfoSelect === "") {

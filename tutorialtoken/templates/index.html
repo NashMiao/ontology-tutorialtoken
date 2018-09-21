@@ -18,7 +18,7 @@
 </head>
 <body>
 <div id="vue-app" style="width:1200px; margin:auto">
-    <el-tabs type="border-card" @tab-click="getAccounts">
+    <el-tabs type="border-card" @tab-click="tabClickHandler">
         <el-tab-pane label="Information Query">
             <div style="margin-bottom: 15px;">
                 <el-row :gutter="20">
@@ -193,7 +193,7 @@
 
         <el-tab-pane label="DApp Settings">
             <div style="margin-bottom: 15px;">
-                <el-row :gutter="20">
+                <el-row :gutter="5">
                     <el-col :span="8">
                         <div class="grid-content bg-purple">
                             <span class="demonstration">Default Networks:&nbsp;</span>
@@ -205,7 +205,7 @@
                             </el-cascader>
                         </div>
                     </el-col>
-                    <el-col :span="16">
+                    <el-col :span="8">
                         <div class="block">
                             <span class="demonstration">Default Account:&nbsp;</span>
                             <el-cascader
@@ -215,6 +215,12 @@
                                     @change="accountChange">
                             </el-cascader>
                         </div>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-input
+                                v-model="b58AddressSelected"
+                                :disabled="true">
+                        </el-input>
                     </el-col>
                 </el-row>
             </div>
@@ -240,8 +246,7 @@
                                     </el-col>
                                     <el-col :span="18">
                                         <el-input
-                                                placeholder="请输入内容"
-                                                v-model="hex_private_key"
+                                                v-model="newHexPrivateKey"
                                                 size="small"
                                                 :disabled="true">
                                         </el-input>
