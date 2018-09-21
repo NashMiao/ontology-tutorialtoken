@@ -25,7 +25,8 @@ def get_accounts():
     account_list = wallet_manager.get_wallet().get_accounts()
     address_list = list()
     for acct in account_list:
-        address_list.append(acct.get_address_base58())
+        acct_item = {'b58_address': acct.address, 'label': acct.label}
+        address_list.append(acct_item)
     return jsonify({'result': address_list}), 200
 
 
@@ -42,13 +43,12 @@ def import_account():
     label = request.json.get('label')
     password = request.json.get('password')
     hex_private_key = request.json.get('hex_private_key')
-    account = wallet_manager.create_account_from_private_key(label, password, hex_private_key)
-    b58_address = account.get_address_base58()
-    # account_list = wallet_manager.wallet_in_mem.get_accounts()
-    # for acct in account_list:
-    #     if acct.get_address_base58() == b58_address:
-    #         return jsonify({'result': 'account has existed.'}), 409
-    # wallet_manager.wallet_in_mem.add_account(account)
+    print(label, password, hex_private_key)
+    try:
+        account = wallet_manager.create_account_from_private_key(label, password, hex_private_key)
+    except ValueError as e:
+        return jsonify({'msg': 'account exists.'}), 500
+    b58_address = account.get_address()
     return jsonify({'result': b58_address}), 200
 
 

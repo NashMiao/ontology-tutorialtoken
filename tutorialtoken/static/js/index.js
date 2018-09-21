@@ -71,9 +71,9 @@ new Vue({
         async getAccounts(tab, event) {
             if (tab.label === 'DApp Settings') {
                 let url = Flask.url_for('get_accounts');
-                let response = await
-                    axios.get(url);
+                let response = await axios.get(url);
                 this.accountOptions = [];
+                console.log(response);
                 for (i = 0; i < response.data.result.length; i++) {
                     this.accountOptions.push({value: response.data.result[i], label: 'Account '.concat(i)});
                 }
@@ -99,44 +99,49 @@ new Vue({
             }
         },
         async importAccount() {
-            let hex_private_key = await
-                this.$prompt('Paste your private key string here:', 'New Account', {
-                    confirmButtonText: 'OK',
-                    cancelButtonText: 'Cancel',
-                    inputPattern: /^[a-zA-Z0-9]{64}$/,
-                    inputErrorMessage: 'Cannot import invalid private key'
-                }).catch(() => {
-                    self.$message.warning('Import canceled');
-                });
+            let hex_private_key = await this.$prompt('Paste your private key string here:', 'Import Account', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                inputPattern: /^[a-zA-Z0-9]{64}$/,
+                inputErrorMessage: 'Cannot import invalid private key'
+            }).catch(() => {
+                this.$message.warning('Import canceled');
+            });
             if (hex_private_key === undefined) {
                 return;
             }
-            let label = await
-                this.$prompt('Account Name:', 'New Account', {
-                    confirmButtonText: 'OK',
-                    cancelButtonText: 'Cancel',
-                    inputErrorMessage: 'Cannot import invalid private key'
-                }).catch(() => {
-                    self.$message.warning('Import canceled');
-                });
+            let label = await this.$prompt('Account Label:', 'Import Account', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel'
+            }).catch(() => {
+                this.$message.warning('Import canceled');
+            });
             if (label === undefined) {
                 return;
             }
-            let import_account_url = Flask.url_for('import_account');
+            let password = await this.$prompt('Account Password', 'Import Account', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel'
+            }).catch(() => {
+                this.$message.warning('Import canceled');
+            });
+            if (password === undefined) {
+                return;
+            }
             try {
-                let import_account_response = await
-                    axios.post(import_account_url, {
-                        'hex_private_key': hex_private_key,
-                        'label': label
-                    });
+                let import_account_url = Flask.url_for('import_account');
+                let import_account_response = await axios.post(import_account_url, {
+                    'hex_private_key': hex_private_key.value,
+                    'label': label.value,
+                    'password': password.value
+                });
                 let get_accounts_url = Flask.url_for('get_accounts');
-                let get_accounts_response = await
-                    axios.get(get_accounts_url);
+                let get_accounts_response = await axios.get(get_accounts_url);
                 this.accountOptions = [];
                 for (i = 0; i < get_accounts_response.data.result.length; i++) {
                     self.accountOptions.push({
-                        value: get_accounts_response.data.result[i],
-                        label: 'Account '.concat(i)
+                        value: get_accounts_response.data.result[i].b58_address,
+                        label: get_accounts_response.data.result[i].hex_private_key
                     });
                 }
                 this.$message.success({
@@ -145,13 +150,14 @@ new Vue({
                 });
             }
             catch (error) {
-                if (error.response.status === 409) {
-                    this.$message({
-                        message: error.response.data.result,
-                        type: 'error',
-                        duration: 2400
-                    })
-                }
+                console.log(error);
+                // if (error.response.status === 409) {
+                //     this.$message({
+                //         message: error.response.data.result,
+                //         type: 'error',
+                //         duration: 2400
+                //     })
+                // }
             }
         },
         async removeAccount() {
