@@ -2,10 +2,12 @@
 <html xmlns="">
 <head>
     <meta charset="UTF-8">
-    <title>Token</title>
+    <title>DXToken - A Token DApp based on OEP4</title>
     <!-- import CSS -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
     {{ JSGlue.include() }}
+    <!-- import favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
         .el-select .el-input {
             width: 240px;
@@ -106,39 +108,54 @@
 
         <el-tab-pane label="Token TransferMulti">
             <el-form :model="multiTransferForm" ref="multiTransferForm" label-width="100px" class="demo-dynamic">
-                <el-row :gutter="20">
+                <el-row :gutter="5">
                     <el-col :span="12">
                         <el-form-item
-                                prop="email"
-                                label="From">
-                            <el-input v-model="multiTransferForm.email"></el-input>
-                            <el-button @click.prevent="removeDomain(domain)">Delete</el-button>
+                                v-for="(fromAddress,index) in multiTransferForm.fromAddressArray"
+                                :label="'From ' +index"
+                                :key="fromAddress.key"
+                                :prop="'fromAddress.'+index+'.value'">
+                            <el-col :span="20">
+                                <el-input v-model="fromAddress.value"></el-input>
+                            </el-col>
+                            <el-col :span="4">
+                                <el-button @click.prevent="removeFromAddress(fromAddress)">Delete</el-button>
+                            </el-col>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item
-                                v-for="(domain, index) in multiTransferForm.domains"
+                                v-for="(toAddress, index) in multiTransferForm.toAddressArray"
                                 :label="'To ' + index"
                                 :key="toAddress.key"
                                 :prop="'toAddress.' + index + '.value'">
-                            <el-input v-model="domain.value"></el-input>
-                            <el-button @click.prevent="removeDomain(domain)">Delete</el-button>
+                            <el-col :span="20">
+                                <el-input v-model="toAddress.value"></el-input>
+                            </el-col>
+                            <el-col :span="4">
+                                <el-button @click.prevent="removeToAddress(toAddress)">Delete</el-button>
+                            </el-col>
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-form-item>
-                    <el-col :spam="6">
-                        <el-button type="success" @click="addDomain">New From-address</el-button>
-                    </el-col>
-                    <el-col :spam="6">
-                        <el-button type="primary" @click="addToAddress">New To-address</el-button>
-                    </el-col>
-                    <el-button type="success" @click="submitForm('multiTransferForm')">Submit</el-button>
-                    <el-button type="warning" @click="resetForm('multiTransferForm')">Reset</el-button>
-                </el-form-item>
+                <el-row :gutter="20">
+                    <el-form-item>
+                        <el-col :spam="8">
+                            <el-button type="success" @click="addTransfer">New Transfer</el-button>
+                        </el-col>
+                        <el-col :spam="8">
+                            <el-button type="success" @click="submitForm('multiTransferForm')">
+                                Submit
+                            </el-button>
+                        </el-col>
+                        <el-col :spam="8">
+                            <el-button type="warning" @click="resetMultiTransferForm('multiTransferForm')">
+                                Reset
+                            </el-button>
+                        </el-col>
+                    </el-form-item>
+                </el-row>
             </el-form>
-
-
         </el-tab-pane>
 
         <el-tab-pane label="Token Approve">

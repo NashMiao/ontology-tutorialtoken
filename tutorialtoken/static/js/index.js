@@ -29,10 +29,10 @@ new Vue({
             accountSelected: [],
             b58AddressSelected: '',
             multiTransferForm: {
-                toAddress: [{
+                toAddressArray: [{
                     value: ''
                 }],
-                domains: [{
+                fromAddressArray: [{
                     value: ''
                 }],
                 email: ''
@@ -50,22 +50,33 @@ new Vue({
                 }
             });
         },
-        resetForm(formName) {
+        resetMultiTransferForm(formName) {
             this.$refs[formName].resetFields();
         },
-        removeDomain(item) {
-            var index = this.multiTransferForm.domains.indexOf(item)
+        removeFromAddress(item) {
+            let index = this.multiTransferForm.fromAddressArray.indexOf(item);
             if (index !== -1) {
-                this.multiTransferForm.domains.splice(index, 1)
+                this.multiTransferForm.fromAddressArray.splice(index, 1)
+            }
+        },
+        removeToAddress(item) {
+            let index = this.multiTransferForm.toAddressArray.indexOf(item);
+            if (index !== -1) {
+                this.multiTransferForm.toAddressArray.splice(index, 1)
             }
         },
         addToAddress() {
-            this.multiTransferForm.toAddress.push({
-                value: ''
+            this.multiTransferForm.toAddressArray.push({
+                value: '',
+                key: Date.now()
             })
         },
-        addDomain() {
-            this.multiTransferForm.domains.push({
+        addTransfer() {
+            this.multiTransferForm.fromAddressArray.push({
+                value: '',
+                key: Date.now()
+            });
+            this.multiTransferForm.toAddressArray.push({
                 value: '',
                 key: Date.now()
             });
@@ -228,7 +239,7 @@ new Vue({
                 });
             } catch (error) {
                 if (error.response.status === 400) {
-                    self.$notify({
+                    this.$notify({
                         title: 'Network Change',
                         type: 'warning',
                         message: error.response.data.result,
@@ -236,7 +247,7 @@ new Vue({
                     })
                 }
                 else if (error.response.status === 409) {
-                    self.$notify({
+                    this.$notify({
                         title: 'Network Change',
                         type: 'warning',
                         message: error.response.data.result,
@@ -244,7 +255,7 @@ new Vue({
                     })
                 }
                 else if (error.response.status === 500) {
-                    self.$notify({
+                    this.$notify({
                         title: 'Network Change',
                         type: 'warning',
                         message: error.response.data.result,
@@ -252,7 +263,7 @@ new Vue({
                     })
                 }
                 else if (error.response.status === 501) {
-                    self.$notify({
+                    this.$notify({
                         title: 'Network Change',
                         type: 'warning',
                         message: error.response.data.result,

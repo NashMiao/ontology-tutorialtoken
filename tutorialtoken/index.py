@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, jsonify, request, render_template, url_for
+from flask import Flask, jsonify, request, send_from_directory, render_template, url_for
 from flask_jsglue import JSGlue
 
 from ontology.crypto.signature_scheme import SignatureScheme
@@ -23,6 +23,17 @@ wallet_manager = WalletManager()
 wallet_path = os.path.join(os.getcwd(), 'wallet', 'wallet.json')
 if os.path.isfile(wallet_path):
     wallet_manager.open_wallet(wallet_path)
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico',
+                               mimetype='image/vnd.microsoft.icon')
 
 
 @app.route('/get_accounts')
@@ -116,6 +127,7 @@ def change_net():
                     return jsonify({'result': e.args[1]}), 500
     else:
         return jsonify({'result': 'unsupported network.'}), 501
+    global oep4
     oep4 = sdk.neo_vm().oep4()
     return jsonify({'result': 'succeed'}), 200
 
@@ -153,9 +165,11 @@ def get_decimal():
 @app.route('/transfer', methods=['POST'])
 def transfer():
     b58_to_address = request.json.get('b58_to_address')
+    password = request.json.get('password')
     amount = int(request.json.get('amount'))
     try:
-        from_acct = account_list[0]
+        b58_from_address = wallet_manager.get_default_account().get_address()
+        from_acct = wallet_manager.get_account(b58_from_address, password)
     except IndexError:
         return jsonify({'result': 'Please import an account'}), 400
     gas_limit = 20000000
@@ -170,11 +184,6 @@ def allowance():
     b58_spender_address = request.json.get('b58_spender_address')
     result = oep4.allowance(b58_owner_address, b58_spender_address)
     return jsonify({'result': result}), 200
-
-
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 
 if __name__ == '__main__':
