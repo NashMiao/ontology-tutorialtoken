@@ -60,7 +60,7 @@ def Main(operation, args):
         return Decimal()
     if operation == 'Allowance':
         if len(args) != 2:
-            return False;
+            return False
         owner = args[0]
         spender = args[1]
         return Allowance(owner, spender)

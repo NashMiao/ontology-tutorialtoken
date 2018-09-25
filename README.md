@@ -281,3 +281,14 @@ def TransferFrom(sender, from_acct, to_acct, amount):
 
 ### Run your DApp
 
+You can run your DApp by the following command:
+
+```shell
+python tutorial_token.py
+```
+
+- If everything goes smoothly, your DApp will run on http://127.0.0.1:5001/. 
+
+- If you want to quit it, you can press CTRL+C or close the terminal.
+
+![Alt text](img/DXTokenDapp.png)
