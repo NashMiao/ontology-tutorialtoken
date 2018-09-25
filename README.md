@@ -1,5 +1,24 @@
 # ontology-tutorialtoken
 
+
+
+
+<!-- TOC -->
+
+- [ontology-tutorialtoken](#ontology-tutorialtoken)
+    - [Introduction](#introduction)
+    - [Getting started](#getting-started)
+        - [Unboxing the DApp](#unboxing-the-dapp)
+        - [Creating Smart Contract](#creating-smart-contract)
+        - [Implement the Interface of OEP4 Contract](#implement-the-interface-of-oep4-contract)
+            - [Get Parameters of the Token](#get-parameters-of-the-token)
+                - [Get Token Name](#get-token-name)
+                - [Get Token Symbol](#get-token-symbol)
+                - [Get Token TotalSupply](#get-token-totalsupply)
+            - [Initialize Token Parameter](#initialize-token-parameter)
+
+<!-- /TOC -->
+
 ## Introduction
 
 The [OEP4 token standard](https://github.com/ontio/OEPs/blob/1d9234f2f09fbc0ef9bcf29b6cfca164ff356c52/OEP-4/OEP-Token-Standard.mediawiki) describes the functions and events that an Ontology token contract has to implement.
@@ -88,25 +107,32 @@ Things to notice:
 
 Now, we want to get the parameters of the token, we can just return them.
 
-- Name
+##### Get Token Name
 
 ```python
 def Name():
     return NAME
 ```
 
-- Symbol
+##### Get Token Symbol
 
 ```python
 def Symbol():
     return SYMBOL
 ```
 
-- TotalSupply
+##### Get Token TotalSupply
+
+The difference between the two following code is if you use `Get(ctx,SUPPLY_KEY)` to acquire the total supply of your OEP4 Token, you need to initialize the total supply by using `Put(ctx, SUPPLY_KEY, total)` operation.
 
 ```python
 def TotalSupply():
     return TOTAL_AMOUNT * FACTOR
+```
+
+```python
+def TotalSupply():
+    return Get(ctx,SUPPLY_KEY)
 ```
 
 #### Initialize Token Parameter
