@@ -32,16 +32,16 @@ def Main(operation, args):
             from_acct = args[0]
             to_acct = args[1]
             amount = args[2]
-            return Transfer(from_acct,to_acct,amount)
+            return Transfer(from_acct, to_acct, amount)
     if operation == 'TransferMulti':
         return TransferMulti(args)
     if operation == 'Approve':
         if len(args) != 3:
             return False
-        owner  = args[0]
+        owner = args[0]
         spender = args[1]
         amount = args[2]
-        return Approve(owner,spender,amount)
+        return Approve(owner, spender, amount)
     if operation == 'TransferFrom':
         if len(args) != 4:
             return False
@@ -49,7 +49,7 @@ def Main(operation, args):
         from_acct = args[1]
         to_acct = args[2]
         amount = args[3]
-        return TransferFrom(spender,from_acct,to_acct,amount)
+        return TransferFrom(spender, from_acct, to_acct, amount)
     if operation == 'BalanceOf':
         if len(args) != 1:
             return False
@@ -62,7 +62,11 @@ def Main(operation, args):
             return False;
         owner = args[0]
         spender = args[1]
-        return Allowance(owner,spender)
+        return Allowance(owner, spender)
+
+
+def Symbol():
+    return SYMBOL
 
 
 def Name():
@@ -74,47 +78,42 @@ def TotalSupply():
 
 
 def Init():
-    if Get(ctx,SUPPLY_KEY):
+    if Get(ctx, SUPPLY_KEY):
         Notify('Already initialized!')
         return False
     else:
         total = TOTAL_AMOUNT * FACTOR
-        Put(ctx,SUPPLY_KEY,total)
-        Put(ctx,concat(TRANSFER_PREFIX,OWNER),total)
+        Put(ctx, SUPPLY_KEY, total)
+        Put(ctx, concat(TRANSFER_PREFIX, OWNER), total)
         Notify(['transfer', '', OWNER, total])
         return True
 
 
-def Symbol():
-    return SYMBOL
-
-
-def Transfer(from_acct,to_acct,amount):
-
+def Transfer(from_acct, to_acct, amount):
     if from_acct == to_acct:
         return True
     if amount == 0:
         return True
-    if amount < 0 :
+    if amount < 0:
         return False
-    if  CheckWitness(from_acct) == False:
+    if CheckWitness(from_acct) == False:
         return False
     if len(to_acct) != 20:
         return False
-    fromKey = concat(TRANSFER_PREFIX,from_acct)
-    fromBalance = Get(ctx,fromKey)
+    fromKey = concat(TRANSFER_PREFIX, from_acct)
+    fromBalance = Get(ctx, fromKey)
     if fromBalance < amount:
         return False
     if fromBalance == amount:
-        Delete(ctx,fromKey)
+        Delete(ctx, fromKey)
     else:
-        Put(ctx,fromKey,fromBalance - amount)
+        Put(ctx, fromKey, fromBalance - amount)
 
-    tokey = concat(TRANSFER_PREFIX,to_acct)
-    toBalance = Get(ctx,tokey)
+    tokey = concat(TRANSFER_PREFIX, to_acct)
+    toBalance = Get(ctx, tokey)
 
-    Put(ctx,tokey,toBalance + amount)
-    Notify(['transfer',from_acct,to_acct,amount])
+    Put(ctx, tokey, toBalance + amount)
+    Notify(['transfer', from_acct, to_acct, amount])
     return True
 
 
@@ -122,66 +121,66 @@ def TransferMulti(args):
     for p in (args):
         if len(p) != 3:
             return False
-        if Transfer(p[0],p[1],p[2]) == False:
+        if Transfer(p[0], p[1], p[2]) == False:
             # return False #  wrong since the previous transaction will be successful
             raise Exception("TransferMulti failed.")
     return True
 
 
-def Approve(owner,spender,amount):
-    if amount < 0 :
+def Approve(owner, spender, amount):
+    if amount < 0:
         return False
     if CheckWitness(owner) == False:
         return False
     if len(spender) != 20:
         return False
-    key = concat(concat(APPROVE_PREFIX,owner),spender)
+    key = concat(concat(APPROVE_PREFIX, owner), spender)
     Put(ctx, key, amount)
     Notify(['approve', owner, spender, amount])
     return True
 
 
-def TransferFrom(sender,from_acct,to_acct,amount):
-    if amount < 0 :
+def TransferFrom(sender, from_acct, to_acct, amount):
+    if amount < 0:
         return False
     if CheckWitness(sender) == False:
         return False
     if len(to_acct) != 20:
         return False
-    appoveKey = concat(concat(APPROVE_PREFIX,from_acct),sender)
-    approvedAmount = Get(ctx,appoveKey)
+    appoveKey = concat(concat(APPROVE_PREFIX, from_acct), sender)
+    approvedAmount = Get(ctx, appoveKey)
     if approvedAmount < amount:
         return False
     if approvedAmount == amount:
-        Delete(ctx,appoveKey)
+        Delete(ctx, appoveKey)
     else:
-        Put(ctx,appoveKey,approvedAmount - amount)
-    
-    fromKey = concat(TRANSFER_PREFIX,from_acct)
-    fromBalance = Get(ctx,fromKey)
+        Put(ctx, appoveKey, approvedAmount - amount)
+
+    fromKey = concat(TRANSFER_PREFIX, from_acct)
+    fromBalance = Get(ctx, fromKey)
     if fromBalance < amount:
         return False
     if fromBalance == amount:
-        Delete(ctx,fromKey)
+        Delete(ctx, fromKey)
     else:
-        Put(ctx,fromKey,fromBalance - amount)
+        Put(ctx, fromKey, fromBalance - amount)
 
-    tokey = concat(TRANSFER_PREFIX,to_acct)
-    toBalance = Get(ctx,tokey)
+    tokey = concat(TRANSFER_PREFIX, to_acct)
+    toBalance = Get(ctx, tokey)
 
-    Put(ctx,tokey,toBalance + amount)
-    Notify(['transfer',from_acct,to_acct,amount])
+    Put(ctx, tokey, toBalance + amount)
+    Notify(['transfer', from_acct, to_acct, amount])
     return True
 
 
 def BalanceOf(account):
-    return Get(ctx,concat(TRANSFER_PREFIX,account))
+    return Get(ctx, concat(TRANSFER_PREFIX, account))
 
 
 def Decimal():
     return DECIMAL
 
 
-def Allowance(owner,spender):
-    allowanceKey = concat(concat(APPROVE_PREFIX,owner),spender)
-    return Get(ctx,allowanceKey)
+def Allowance(owner, spender):
+    allowanceKey = concat(concat(APPROVE_PREFIX, owner), spender)
+    return Get(ctx, allowanceKey)
