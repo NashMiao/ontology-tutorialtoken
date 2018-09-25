@@ -1,12 +1,10 @@
 # ontology-tutorialtoken
 
-
-
-
 <!-- TOC -->
 
 - [ontology-tutorialtoken](#ontology-tutorialtoken)
     - [Introduction](#introduction)
+    - [Setting up the development environment](#setting-up-the-development-environment)
     - [Getting started](#getting-started)
         - [Unboxing the DApp](#unboxing-the-dapp)
         - [Creating Smart Contract](#creating-smart-contract)
@@ -48,6 +46,13 @@ Specifically, In OEP4, we need to implement the following interface for our OEP4
 
 Benefit from [Ontology Python Sdk](https://pypi.org/project/ontology-python-sdk/), we can easily calling OEP4 interface by Python. If you want to know more details, you can read our [Ontology Python SDK API Reference](https://apidoc.ont.io/pythonsdk/#oep4).
 
+## Setting up the development environment
+
+There are a few technical requirements before we start. Please install the following:
+
+- [Python 3.7](https://www.python.org/downloads/release/python-370/)
+- [Git](https://git-scm.com/)
+
 ## Getting started
 
 ### Unboxing the DApp
@@ -62,6 +67,12 @@ Download the DApp box.
 
 ```shell
 OBox --install tutorialtoken
+```
+
+Create virtual environments(optional).
+
+```shell
+virtualenv --no-site-packages venv
 ```
 
 Install the necessary dependencies.
