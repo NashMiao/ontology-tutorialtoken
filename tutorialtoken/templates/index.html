@@ -31,7 +31,8 @@
                                 v-model="eventKey"
                                 class="input-with-select">
                             <el-select v-model="eventInfoSelect" slot="prepend" placeholder="Select">
-                                <el-option label="State" value="State"></el-option>
+                                <el-option label="State" value="State"/>
+                                </el-option>
                                 <el-option label="GasConsumed" value="GasConsumed"></el-option>
                                 <el-option label="Notify" value="Notify"></el-option>
                             </el-select>
@@ -107,54 +108,93 @@
         </el-tab-pane>
 
         <el-tab-pane label="Token TransferMulti">
-            <el-form :model="multiTransferForm" ref="multiTransferForm" label-width="100px" class="demo-dynamic">
-                <el-row :gutter="5">
-                    <el-col :span="12">
+            <el-form :model="multiTransferForm" ref="multiTransferForm" label-width="0px" class="demo-dynamic">
+                <el-row :gutter="20">
+                    <el-col :span="5">
                         <el-form-item
                                 v-for="(fromAddress,index) in multiTransferForm.fromAddressArray"
-                                :label="'From ' +index"
                                 :key="fromAddress.key"
-                                :prop="'fromAddress.'+index+'.value'">
-                            <el-col :span="20">
-                                <el-input v-model="fromAddress.value"></el-input>
-                            </el-col>
-                            <el-col :span="4">
-                                <el-button @click.prevent="removeFromAddress(fromAddress)">Delete</el-button>
-                            </el-col>
+                                :prop="'fromAddressArray.'+index+'.value'">
+                            <el-select
+                                    v-model="multiTransferForm.fromAddressArray[index]"
+                                    clearable
+                                    size="medium"
+                                    placeholder="Select From Account">
+                                <el-option
+                                        v-for="fromAddress in settingForm.accountOptions"
+                                        :key="fromAddress.value"
+                                        :label="fromAddress.label"
+                                        :value="fromAddress.value">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="12">
+                    <el-col :span="11">
                         <el-form-item
                                 v-for="(toAddress, index) in multiTransferForm.toAddressArray"
-                                :label="'To ' + index"
                                 :key="toAddress.key"
-                                :prop="'toAddress.' + index + '.value'">
-                            <el-col :span="20">
-                                <el-input v-model="toAddress.value"></el-input>
+                                :prop="'toAddressArray.' + index + '.value'">
+                            <el-input
+                                    size="medium"
+                                    type="string"
+                                    placeholder="base58 encode address"
+                                    suffix-icon="el-icon-location"
+                                    v-model="toAddress.value">
+                                <template slot="prepend">To</template>
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item
+                                v-for="(amount,index) in multiTransferForm.amountArray"
+                                :key="amount.key"
+                                :prop="'amountArray.'+index+'.value'">
+                            <el-col :span="16">
+                                <el-input
+                                        size="medium"
+                                        type="number"
+                                        placeholder="oep4 token"
+                                        suffix-icon="el-icon-caret-right"
+                                        v-model="amount.value">
+                                    <template slot="prepend">Amount</template>
+                                </el-input>
                             </el-col>
-                            <el-col :span="4">
-                                <el-button @click.prevent="removeToAddress(toAddress)">Delete</el-button>
+                            <el-col :span="8">
+                                <el-button
+                                        round
+                                        type="danger"
+                                        icon="el-icon-delete"
+                                        @click.prevent="removeTransfer(amount)">
+                                </el-button>
                             </el-col>
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-row :gutter="20">
-                    <el-form-item>
-                        <el-col :spam="8">
-                            <el-button type="success" @click="addTransfer">New Transfer</el-button>
-                        </el-col>
-                        <el-col :spam="8">
-                            <el-button type="success" @click="submitForm('multiTransferForm')">
+
+                <el-form-item>
+                    <el-row :gutter="20">
+                        <el-col :span="8">
+                            <el-button
+                                    type="success"
+                                    round @click="submitForm('multiTransferForm')">
                                 Submit
                             </el-button>
                         </el-col>
-                        <el-col :spam="8">
-                            <el-button type="warning" @click="resetMultiTransferForm('multiTransferForm')">
+                        <el-col :span="8">
+                            <el-button
+                                    type="primary"
+                                    round @click="addTransfer">
+                                New Transfer
+                            </el-button>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-button type="warning"
+                                       round @click="resetMultiTransferForm('multiTransferForm')">
                                 Reset
                             </el-button>
                         </el-col>
-                    </el-form-item>
-                </el-row>
+                    </el-row>
+                </el-form-item>
             </el-form>
         </el-tab-pane>
 
@@ -246,9 +286,10 @@
                 <el-form :label-position="labelPosition" label-width="150px" :model="settingForm">
                     <el-row :gutter="5">
                         <el-col :span="8">
-                            <el-form-item label="Default Networks">
+                            <el-form-item label="Default Network">
                                 <el-cascader
                                         expand-trigger="hover"
+                                        filterable
                                         :options="settingForm.networkOptions"
                                         v-model="settingForm.networkSelected"
                                         @change="networkChange">
@@ -259,6 +300,7 @@
                             <el-form-item label="Default Account">
                                 <el-cascader
                                         expand-trigger="hover"
+                                        filterable
                                         :options="settingForm.accountOptions"
                                         v-model="settingForm.accountSelected"
                                         @change="accountChange">

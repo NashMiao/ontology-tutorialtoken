@@ -81,6 +81,20 @@ def account_change():
         return jsonify({'result': 'Invalid address'}), 400
 
 
+@app.route('/remove_account', methods=['POST'])
+def remove_account():
+    b58_address_remove = request.json.get('b58_address_remove')
+    password = request.json.get('password')
+    try:
+        acct = wallet_manager.get_account(b58_address_remove, password)
+        if acct is None:
+            return jsonify({'result', ''.join(['remove ', b58_address_remove, ' failed!'])}), 500
+        wallet_manager.wallet_in_mem.remove_account(b58_address_remove)
+        return jsonify({'result', ''.join(['remove ', b58_address_remove, ' successful!'])}), 200
+    except SDKException or RuntimeError:
+        return jsonify({'result', ''.join(['remove ', b58_address_remove, ' failed!'])}), 500
+
+
 @app.route('/set_contract_address', methods=['POST'])
 def set_contract_address():
     contract_address = request.json.get('contract_address')
@@ -176,6 +190,14 @@ def transfer():
     gas_price = 500
     result = oep4.transfer(from_acct, b58_to_address, amount, from_acct, gas_limit, gas_price)
     return jsonify({'result': result}), 200
+
+
+@app.route('/multi_transfer', methods=['POST'])
+def transfer_multi():
+    transfer_array = request.json.get('transfer_array')
+    print(transfer_array)
+    tx_hash = ''
+    return jsonify({'result': tx_hash}), 200
 
 
 @app.route('/allowance', methods=['POST'])

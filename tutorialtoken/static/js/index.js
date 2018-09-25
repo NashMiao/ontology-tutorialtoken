@@ -12,6 +12,7 @@ new Vue({
             inputAllowanceOwner: '',
             inputAllowanceSpender: '',
             labelPosition: 'right',
+            isSwitchToSettings: true,
             settingForm: {
                 networkOptions: [{
                     value: 'MainNet',
@@ -23,11 +24,11 @@ new Vue({
                     value: 'Localhost',
                     label: 'Localhost 20336'
                 }],
+                networkSelected: ['TestNet'],
+                accountOptions: [],
+                accountSelected: [],
+                b58AddressSelected: ''
             },
-            networkSelected: ['TestNet'],
-            accountOptions: [],
-            accountSelected: [],
-            b58AddressSelected: '',
             multiTransferForm: {
                 toAddressArray: [{
                     value: ''
@@ -35,50 +36,85 @@ new Vue({
                 fromAddressArray: [{
                     value: ''
                 }],
-                email: ''
+                amountArray: [{
+                    value: ''
+                }]
             },
         }
     },
     methods: {
-        submitForm(formName) {
-            this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    alert('submit!');
-                } else {
-                    console.log('error submit!!');
-                    return false;
-                }
-            });
+        async submitForm(formName) {
+            if (formName === "multiTransferForm") {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let from = this.multiTransferForm.fromAddressArray;
+                        let to = this.multiTransferForm.toAddressArray;
+                        let amount = this.multiTransferForm.amountArray;
+                        console.log(from);
+                        console.log(to);
+                        console.log(amount);
+                        console.log(from.length);
+                        console.log(to.length);
+                        console.log(amount.length);
+                        if (from.length !== to.length || from.length !== amount.length) {
+                            this.$message({
+                                message: 'Input mistake',
+                                type: 'error',
+                                duration: 2400
+                            });
+                            return
+                        }
+                        let transfer_array = [];
+                        for (index in this.multiTransferForm.fromAddressArray) {
+                            let transfer = [from[index], to[index].value, amount[index].value];
+                            transfer_array.push(transfer);
+                        }
+                        console.log(transfer_array);
+                        try {
+                            let multi_transfer_url = Flask.url_for('multi_transfer');
+                            let response = await
+                            axios.post(multi_transfer_url, {
+                                'transfer_array': JSON.parse(ransfer_array)
+                            });
+                            console.log(response);
+                        }
+                        catch (error) {
+                            console.log(error);
+                        }
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            }
         },
         resetMultiTransferForm(formName) {
             this.$refs[formName].resetFields();
         },
-        removeFromAddress(item) {
-            let index = this.multiTransferForm.fromAddressArray.indexOf(item);
-            if (index !== -1) {
-                this.multiTransferForm.fromAddressArray.splice(index, 1)
+        removeTransfer(item) {
+            let index = this.multiTransferForm.amountArray.indexOf(item);
+            if (this.multiTransferForm.amountArray.length === 1) {
+                return
             }
-        },
-        removeToAddress(item) {
-            let index = this.multiTransferForm.toAddressArray.indexOf(item);
             if (index !== -1) {
-                this.multiTransferForm.toAddressArray.splice(index, 1)
+                this.multiTransferForm.fromAddressArray.splice(index, 1);
+                this.multiTransferForm.toAddressArray.splice(index, 1);
+                this.multiTransferForm.amountArray.splice(index, 1);
             }
-        },
-        addToAddress() {
-            this.multiTransferForm.toAddressArray.push({
-                value: '',
-                key: Date.now()
-            })
         },
         addTransfer() {
+            let now_time = Date.now();
             this.multiTransferForm.fromAddressArray.push({
                 value: '',
-                key: Date.now()
+                key: now_time
             });
             this.multiTransferForm.toAddressArray.push({
                 value: '',
-                key: Date.now()
+                key: now_time
+            });
+            this.multiTransferForm.amountArray.push({
+                value: '',
+                key: now_time
             });
         },
         async getName() {
@@ -120,11 +156,6 @@ new Vue({
                 })
             }
         },
-        tabClickHandler(tab, event) {
-            if (tab.label === 'DApp Settings') {
-                this.getAccounts()
-            }
-        },
         async getAccounts() {
             let url = Flask.url_for('get_accounts');
             let response = await axios.get(url);
@@ -134,6 +165,26 @@ new Vue({
                     value: response.data.result[i].b58_address,
                     label: response.data.result[i].label
                 });
+            }
+        },
+        async tabClickHandler(tab, event) {
+            if (tab.label === 'DApp Settings') {
+                if (this.isSwitchToSettings === true) {
+                    await this.getAccounts();
+                    this.isSwitchToSettings = false;
+                    if (this.settingForm.accountSelected.length === 0 && this.settingForm.accountOptions.length !== 0) {
+                        let firstB58Address = this.settingForm.accountOptions[0].value;
+                        this.settingForm.accountSelected = [firstB58Address];
+                        this.settingForm.b58AddressSelected = firstB58Address;
+                    }
+                }
+            }
+            else if (tab.label === 'Token TransferMulti') {
+                this.isSwitchToSettings = true;
+                await this.getAccounts();
+            }
+            else {
+                this.isSwitchToSettings = true;
             }
         },
         async accountChange(value) {
@@ -192,7 +243,7 @@ new Vue({
                     'label': label.value,
                     'password': password.value
                 });
-                this.getAccounts();
+                await this.getAccounts();
                 this.$message.success({
                     message: 'Import successful',
                     duration: 1200
@@ -210,7 +261,16 @@ new Vue({
             }
         },
         async removeAccount() {
-            console.log('removeAccount');
+            let password = await this.$prompt('Account Password', 'Remove Default Account', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel'
+            }).catch(() => {
+                this.$message.warning('Import canceled');
+            });
+            if (password === undefined) {
+                return;
+            }
+            console.log("TODO");
         },
         async networkChange(value) {
             let msg = '';
@@ -238,6 +298,7 @@ new Vue({
                     duration: 2000
                 });
             } catch (error) {
+                this.settingForm.networkSelected = ['TestNet'];
                 if (error.response.status === 400) {
                     this.$notify({
                         title: 'Network Change',
@@ -440,7 +501,7 @@ new Vue({
                 });
                 this.newHexPrivateKey = response.data.hex_private_key;
                 this.privateKeyDialogVisible = true;
-                this.getAccounts();
+                await this.getAccounts();
             } catch (error) {
                 console.log(error);
             }
