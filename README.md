@@ -26,19 +26,19 @@ Benefit from [Ontology Python Sdk](https://pypi.org/project/ontology-python-sdk/
 
 ### Unboxing the DApp
 
-- Install ontology-python-sdk
+Install ontology-python-sdk
 
 ```shell
 pip install ontology-python-sdk
 ```
 
-- Install Ontology DApp Box.
+Install Ontology DApp Box.
 
 ```shell
 pip install OBox
 ```
 
-- Download the box. This also takes care of installing the necessary dependencies.
+Download the box. This also takes care of installing the necessary dependencies.
 
 ```shell
 OBox --install tutorialtoken
@@ -48,7 +48,7 @@ OBox --install tutorialtoken
 
 With our front-end taken care of, we can focus on the `oep4_token` contract.
 
-- In the `contracts/` directory of your `OBox`, create the file `oep4_token.py` and add the following contents:
+In the `contracts/` directory of your `OBox`, create the file `oep4_token.py` and add the following contents:
 
 ```python
 from boa.interop.System.Storage import GetContext, Get, Put, Delete
@@ -60,9 +60,12 @@ ctx = GetContext()
 
 The interface `GetContext()` is used to get current storage context in smart contract.
 
-**NOTE**: Storage is an important conception in Ontology Blockchain, which maintain a key-value storage context that used to save the global variable. We can use `Put()` interface to insert data into a persistent storage area in the from of key-value, and use `Get()` interface to get value by key from a persistent storage area.
+**NOTE**: Storage is an important conception in Ontology Blockchain, which maintain a key-value storage context that used to save the global variable.
 
-- To set our own parameters for the token, we'll be declaring our own name, symbol, and other details. Add the following content block to the contract:
+- We can use `Put()` interface to insert data into a persistent storage area in the from of key-value.
+- We can use `Get()` interface to get value by key from a persistent storage area.
+
+To set our own parameters for the token, we'll be declaring our own name, symbol, and other details. Add the following content block to the contract:
 
 ```python
 NAME = 'DXToken'
