@@ -20,7 +20,7 @@ pip install ontology-python-sdk
 OBox --install tutorialtoken
 ```
 
-## Creating the "oep4_token" smart contract
+## Creating Smart Contract
 
 With our front-end taken care of, we can focus on the `oep4_token` contract.
 
