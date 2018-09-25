@@ -73,6 +73,10 @@ def Name():
     return NAME
 
 
+def Decimal():
+    return DECIMAL
+
+
 def TotalSupply():
     return TOTAL_AMOUNT * FACTOR
 
@@ -175,10 +179,6 @@ def TransferFrom(sender, from_acct, to_acct, amount):
 
 def BalanceOf(account):
     return Get(ctx, concat(TRANSFER_PREFIX, account))
-
-
-def Decimal():
-    return DECIMAL
 
 
 def Allowance(owner, spender):
