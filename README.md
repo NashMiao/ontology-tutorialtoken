@@ -2,19 +2,19 @@
 
 ## Unboxing the Dapp
 
-1. Install Ontology Dapp Box.
+- Install Ontology Dapp Box.
 
 ```shell
 pip install OBox
 ```
 
-2. Install ontology-python-sdk
+- Install ontology-python-sdk
 
 ```shell
 pip install ontology-python-sdk
 ```
 
-3. Download the box. This also takes care of installing the necessary dependencies.
+- Download the box. This also takes care of installing the necessary dependencies.
 
 ```shell
 OBox --install tutorialtoken
@@ -24,7 +24,7 @@ OBox --install tutorialtoken
 
 With our front-end taken care of, we can focus on the `oep4_token` contract.
 
-1. In the `contracts/` directory of your `OBox`, create the file `oep4_token.py` and add the following contents:
+- In the `contracts/` directory of your `OBox`, create the file `oep4_token.py` and add the following contents:
 
 ```python
 from boa.interop.System.Storage import GetContext, Get, Put, Delete
@@ -34,7 +34,7 @@ from boa.builtins import concat, ToScriptHash
 ctx = GetContext()
 ```
 
-2. To set our own parameters for the token, we'll be declaring our own name, symbol, and other details. Add the following content block to the contract (between the curly braces):
+- To set our own parameters for the token, we'll be declaring our own name, symbol, and other details. Add the following content block to the contract (between the curly braces):
 
 ```python
 NAME = 'DXToken'
@@ -51,6 +51,6 @@ Things to notice:
 - The `DECIMAL` variable determines the degree to which this token can be subdivided. For our example we went with 2 decimal places, similar to dollars and cents.
 - The `TOTAL_AMOUNT` variable determines the number of tokens created when this contract is deployed. In this case, the number is arbitrary.
 
-3. Implement OEP4 interface
+- Implement OEP4 interface
 
 According to[ OEP-Token-Standard](https://github.com/ontio/OEPs/blob/1d9234f2f09fbc0ef9bcf29b6cfca164ff356c52/OEP-4/) We need to add 10 interface for our Token.
