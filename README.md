@@ -326,11 +326,19 @@ python tutorial_token.py
 
 #### Import Account
 
+You should paste a private key string into the input box.
+
 ![importAccount1](img/importAccount1.png)
+
+You can set a label for you account.
 
 ![importAccount2](img/importAccount2.png)
 
+You should input a password for your account.
+
 ![importAccount3](img/importAccount3.png)
+
+If you import succeed, you can see your new account in Select's drop-down menu.
 
 ![importAccount4](img/importAccount4.png)
 
