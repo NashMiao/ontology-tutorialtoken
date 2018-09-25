@@ -57,18 +57,18 @@ Things to notice:
 
 According to[ OEP-Token-Standard](https://github.com/ontio/OEPs/blob/1d9234f2f09fbc0ef9bcf29b6cfca164ff356c52/OEP-4/), we need to add 10 interface for our Token.
 
-|       | Main Function      |
-| :---: | :----------------- |
-| 1     | init()             |
-| 2     | get_name()         |
-| 3     | get_symbol()       |
-| 4     | get_decimal()      |
-| 5     | get_total_supply() |
-| 6     | approve()          |
-| 7     | allowance()        |
-| 8     | balance_of()       |
-| 9     | transfer()         |
-| 10    | transfer_multi()   |
-| 11    | transfer_from()    |
+|    | Main Function      | Description                                                                                 |
+|:--:|:-------------------|:--------------------------------------------------------------------------------------------|
+| 1  | init()             | initialize smart contract parameter                                                         |
+| 2  | get_name()         | return the name of an oep4 token                                                            |
+| 3  | get_symbol()       | return the symbol of an oep4 token                                                          |
+| 4  | get_decimal()      | return the number of decimals used by the oep4 token                                        |
+| 5  | get_total_supply() | return the total supply of the oep4 token                                                   |
+| 6  | approve()          | allows spender to withdraw a certain amount of oep4 token from owner account multiple times |
+| 7  | allowance()        | query the amount of spender still allowed to withdraw from owner account                    |
+| 8  | balance_of()       | query the ope4 token balance of the given base58 encode address                             |
+| 9  | transfer()         | transfer an amount of tokens from one account to another account                            |
+| 10 | transfer_multi()   | transfer amount of token from multiple from-account to multiple to-account multiple times   |
+| 11 | transfer_from()    | allow spender to withdraw amount of oep4 token from from-account to to-account              |
 
 In our [ontology-python-sdk](https://pypi.org/project/ontology-python-sdk/), we have implement the calling interface for your. If you want to know more details, you can visit our [Ontology Python SDK API Reference](https://apidoc.ont.io/pythonsdk/#oep4).
