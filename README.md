@@ -1,5 +1,7 @@
 # ontology-tutorialtoken
 
+![DXToken Dapp](img/DXTokenDapp.png)
+
 ## Unboxing the Dapp
 
 - Install Ontology Dapp Box.
