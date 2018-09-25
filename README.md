@@ -53,6 +53,22 @@ Things to notice:
 - The `DECIMAL` variable determines the degree to which this token can be subdivided. For our example we went with 2 decimal places, similar to dollars and cents.
 - The `TOTAL_AMOUNT` variable determines the number of tokens created when this contract is deployed. In this case, the number is arbitrary.
 
-- Implement OEP4 interface
+- Implement OEP4 Interface in Smart Contract
 
-According to[ OEP-Token-Standard](https://github.com/ontio/OEPs/blob/1d9234f2f09fbc0ef9bcf29b6cfca164ff356c52/OEP-4/) We need to add 10 interface for our Token.
+According to[ OEP-Token-Standard](https://github.com/ontio/OEPs/blob/1d9234f2f09fbc0ef9bcf29b6cfca164ff356c52/OEP-4/), we need to add 10 interface for our Token.
+
+|       | Main Function      |
+| :---: | :----------------- |
+| 1     | init()             |
+| 2     | get_name()         |
+| 3     | get_symbol()       |
+| 4     | get_decimal()      |
+| 5     | get_total_supply() |
+| 6     | approve()          |
+| 7     | allowance()        |
+| 8     | balance_of()       |
+| 9     | transfer()         |
+| 10    | transfer_multi()   |
+| 11    | transfer_from()    |
+
+In our [ontology-python-sdk](https://pypi.org/project/ontology-python-sdk/), we have implement the calling interface for your. If you want to know more details, you can visit our [Ontology Python SDK API Reference](https://apidoc.ont.io/pythonsdk/#oep4).
