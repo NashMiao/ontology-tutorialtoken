@@ -20,18 +20,24 @@ Specifically, In [OEP4](https://github.com/ontio/OEPs/blob/1d9234f2f09fbc0ef9bcf
 | 10 | transfer_multi()   | transfer amount of token from multiple from-account to multiple to-account multiple times   |
 | 11 | transfer_from()    | allow spender to withdraw amount of oep4 token from from-account to to-account              |
 
-## Unboxing the Dapp
+Benefit from [ontology-python-sdk](https://pypi.org/project/ontology-python-sdk/), we can easily calling OEP4 interface by Python.
 
-- Install Ontology Dapp Box.
+**NOTE**: If you want to know more details, you can read our [Ontology Python SDK API Reference](https://apidoc.ont.io/pythonsdk/#oep4).
 
-```shell
-pip install OBox
-```
+## Getting started
+
+### Unboxing the DApp
 
 - Install ontology-python-sdk
 
 ```shell
 pip install ontology-python-sdk
+```
+
+- Install Ontology DApp Box.
+
+```shell
+pip install OBox
 ```
 
 - Download the box. This also takes care of installing the necessary dependencies.
@@ -40,7 +46,7 @@ pip install ontology-python-sdk
 OBox --install tutorialtoken
 ```
 
-## Creating Smart Contract
+### Creating Smart Contract
 
 With our front-end taken care of, we can focus on the `oep4_token` contract.
 
@@ -54,7 +60,7 @@ from boa.builtins import concat, ToScriptHash
 ctx = GetContext()
 ```
 
-- To set our own parameters for the token, we'll be declaring our own name, symbol, and other details. Add the following content block to the contract (between the curly braces):
+- To set our own parameters for the token, we'll be declaring our own name, symbol, and other details. Add the following content block to the contract:
 
 ```python
 NAME = 'DXToken'
@@ -71,7 +77,29 @@ Things to notice:
 - The `DECIMAL` variable determines the degree to which this token can be subdivided. For our example we went with 2 decimal places, similar to dollars and cents.
 - The `TOTAL_AMOUNT` variable determines the number of tokens created when this contract is deployed. In this case, the number is arbitrary.
 
-- Implement OEP4 Interface in Smart Contract
+### Implement the Interface of OEP4 Contract
 
+#### Get Parameters of the Token
 
-**NOTE**: In [ontology-python-sdk](https://pypi.org/project/ontology-python-sdk/), we have implement the OEP4 calling interface for your. If you want to know more details, you can read our [Ontology Python SDK API Reference](https://apidoc.ont.io/pythonsdk/#oep4).
+Now, we want to get the parameters of the token, we can just return them.
+
+- Name
+
+```python
+def Name():
+    return NAME
+```
+
+- Symbol
+
+```python
+def Symbol():
+    return SYMBOL
+```
+
+- TotalSupply
+
+```python
+def TotalSupply():
+    return TOTAL_AMOUNT * FACTOR
+```
