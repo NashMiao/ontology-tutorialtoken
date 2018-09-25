@@ -21,6 +21,13 @@
             - [TransferMulti](#transfermulti)
             - [TransferFrom](#transferfrom)
         - [Run your DApp](#run-your-dapp)
+        - [Use your DApp](#use-your-dapp)
+            - [Query Token Name](#query-token-name)
+            - [Query Token Symbol](#query-token-symbol)
+            - [Query Token Decimals](#query-token-decimals)
+            - [Set DApp](#set-dapp)
+            - [Select Default Account](#select-default-account)
+            - [Import Account](#import-account)
 
 <!-- /TOC -->
 
@@ -281,7 +288,7 @@ def TransferFrom(sender, from_acct, to_acct, amount):
 
 ### Run your DApp
 
-You can run your DApp by the following command:
+At this point, you can run the DApp in your browser:
 
 ```shell
 python tutorial_token.py
@@ -291,4 +298,46 @@ python tutorial_token.py
 
 - If you want to quit it, you can press CTRL+C or close the terminal.
 
-![Alt text](img/DXTokenDapp.png)
+![Token Dapp](img/DXTokenDapp.png)
+
+### Use your DApp
+
+#### Query Token Name
+
+![Token Name](img/tokenName.png)
+
+#### Query Token Symbol
+
+![Token Symbol](img/tokenSymbol.png)
+
+#### Query Token Decimals
+
+![Token Decimals](img/tokenDecimals.png)
+
+#### Set DApp
+
+![Dapp Settings](img/dappSettings.png)
+
+#### Select Default Account
+
+![electDefaultAccount1](img/selectDefaultAccount1.png)
+
+![selectDefaultAccount2](img/selectDefaultAccount2.png)
+
+#### Import Account
+
+![importAccount1](img/importAccount1.png)
+
+![importAccount2](img/importAccount2.png)
+
+![importAccount3](img/importAccount3.png)
+
+![importAccount4](img/importAccount4.png)
+
+You can get your new account's base58 encode address in here:
+
+![importAccount5](img/importAccount5.png)
+
+**NOTE**: The length of your hexadecimal private key should be 64. if you input an error private key, you will get a notify.
+
+![invalidPrivateKe](img/invalidPrivateKey.png)
