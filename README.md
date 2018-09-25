@@ -2,9 +2,9 @@
 
 ## Introduction
 
-The OEP4 token standard describes the functions and events that an Ontology token contract has to implement.
+The [OEP4 token standard](https://github.com/ontio/OEPs/blob/1d9234f2f09fbc0ef9bcf29b6cfca164ff356c52/OEP-4/OEP-Token-Standard.mediawiki) describes the functions and events that an Ontology token contract has to implement.
 
-Specifically, In [OEP4](https://github.com/ontio/OEPs/blob/1d9234f2f09fbc0ef9bcf29b6cfca164ff356c52/OEP-4/), we need to implement the following interface for our OEP4 Token.
+Specifically, In OEP4, we need to implement the following interface for our OEP4 Token.
 
 |    | Interface          | Description                                                                                 |
 |:--:|:-------------------|:--------------------------------------------------------------------------------------------|
