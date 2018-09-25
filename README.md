@@ -60,6 +60,10 @@ from boa.builtins import concat, ToScriptHash
 ctx = GetContext()
 ```
 
+The interface `GetContext()` is used to get current storage context in smart contract.
+
+**Storage** is an important conception in Ontology Blockchain, which maintain a key-value storage context that used to save the global variable. We can use `Put()` interface to insert data into a persistent storage area in the from of key-value, and use `Get()` interface to get value by key from a persistent storage area.
+
 - To set our own parameters for the token, we'll be declaring our own name, symbol, and other details. Add the following content block to the contract:
 
 ```python
@@ -103,3 +107,23 @@ def Symbol():
 def TotalSupply():
     return TOTAL_AMOUNT * FACTOR
 ```
+
+#### Initialize Token Parameter
+
+In Ontology smart contract, `Notify()` is an  interface that used to send notifications (including socket notifications or rpc queries) to clients that are executing this smart contract.
+
+```python
+def Init():
+    if Get(ctx, SUPPLY_KEY):
+        Notify('Already initialized!')
+        return False
+    else:
+        total = TOTAL_AMOUNT * FACTOR
+        Put(ctx, SUPPLY_KEY, total)
+        Put(ctx, concat(TRANSFER_PREFIX, OWNER), total)
+        Notify(['transfer', '', OWNER, total])
+        return True
+```
+
+Therefore, if you want to record something public into the Ontology Blockchain, you can use the interface `Notify()`.
+
