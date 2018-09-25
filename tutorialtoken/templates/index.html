@@ -108,7 +108,11 @@
         </el-tab-pane>
 
         <el-tab-pane label="Token TransferMulti">
-            <el-form :model="multiTransferForm" ref="multiTransferForm" label-width="0px" class="demo-dynamic">
+            <el-form
+                    :model="multiTransferForm"
+                    ref="multiTransferForm"
+                    label-width="0px"
+                    class="demo-dynamic">
                 <el-row :gutter="20">
                     <el-col :span="5">
                         <el-form-item
@@ -133,7 +137,9 @@
                         <el-form-item
                                 v-for="(toAddress, index) in multiTransferForm.toAddressArray"
                                 :key="toAddress.key"
-                                :prop="'toAddressArray.' + index + '.value'">
+                                :prop="'toAddressArray.' + index + '.value'"
+                                :rules="[{required:true,message:'to address can not be null', trigger: 'blur'},
+                                { min: 34, max: 34, message: 'Length should be 34', trigger: 'blur' }]">
                             <el-input
                                     size="medium"
                                     type="string"
@@ -148,7 +154,10 @@
                         <el-form-item
                                 v-for="(amount,index) in multiTransferForm.amountArray"
                                 :key="amount.key"
-                                :prop="'amountArray.'+index+'.value'">
+                                :prop="'amountArray.'+index+'.value'"
+                                :rules="{
+                                required:true,message:'amount can not be null', trigger: 'blur'
+                                }">
                             <el-col :span="16">
                                 <el-input
                                         size="medium"
@@ -366,7 +375,6 @@
                     </el-col>
                 </el-row>
             </div>
-
         </el-tab-pane>
     </el-tabs>
 </div>

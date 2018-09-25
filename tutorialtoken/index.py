@@ -1,12 +1,11 @@
 import os
 
-from flask import Flask, jsonify, request, send_from_directory, render_template, url_for
+from flask import Flask, request, send_from_directory, render_template, url_for
 from flask_jsglue import JSGlue
+from flask import json
 
-from ontology.crypto.signature_scheme import SignatureScheme
 from ontology.wallet.wallet_manager import WalletManager
 from ontology.exception.exception import SDKException
-from ontology.account.account import Account
 from ontology.ont_sdk import OntologySdk
 from ontology.utils import util
 
@@ -43,7 +42,7 @@ def get_accounts():
     for acct in account_list:
         acct_item = {'b58_address': acct.address, 'label': acct.label}
         address_list.append(acct_item)
-    return jsonify({'result': address_list}), 200
+    return json.jsonify({'result': address_list}), 200
 
 
 @app.route('/create_account', methods=['POST'])
@@ -53,7 +52,7 @@ def create_account():
     hex_private_key = util.get_random_bytes(32).hex()
     wallet_manager.create_account_from_private_key(label, password, hex_private_key)
     wallet_manager.save()
-    return jsonify({'hex_private_key': hex_private_key})
+    return json.jsonify({'hex_private_key': hex_private_key})
 
 
 @app.route('/import_account', methods=['POST'])
@@ -65,10 +64,10 @@ def import_account():
     try:
         account = wallet_manager.create_account_from_private_key(label, password, hex_private_key)
     except ValueError as e:
-        return jsonify({'msg': 'account exists.'}), 500
+        return json.jsonify({'msg': 'account exists.'}), 500
     b58_address = account.get_address()
     wallet_manager.save()
-    return jsonify({'result': b58_address}), 200
+    return json.jsonify({'result': b58_address}), 200
 
 
 @app.route('/account_change', methods=['POST'])
@@ -76,9 +75,9 @@ def account_change():
     b58_address_selected = request.json.get('b58_address_selected')
     try:
         wallet_manager.wallet_in_mem.set_default_account_by_address(b58_address_selected)
-        return jsonify({'result': 'change successful'}), 200
+        return json.jsonify({'result': 'change successful'}), 200
     except SDKException:
-        return jsonify({'result': 'Invalid address'}), 400
+        return json.jsonify({'result': 'Invalid address'}), 400
 
 
 @app.route('/remove_account', methods=['POST'])
@@ -88,18 +87,18 @@ def remove_account():
     try:
         acct = wallet_manager.get_account(b58_address_remove, password)
         if acct is None:
-            return jsonify({'result', ''.join(['remove ', b58_address_remove, ' failed!'])}), 500
+            return json.jsonify({'result', ''.join(['remove ', b58_address_remove, ' failed!'])}), 500
         wallet_manager.wallet_in_mem.remove_account(b58_address_remove)
-        return jsonify({'result', ''.join(['remove ', b58_address_remove, ' successful!'])}), 200
+        return json.jsonify({'result', ''.join(['remove ', b58_address_remove, ' successful!'])}), 200
     except SDKException or RuntimeError:
-        return jsonify({'result', ''.join(['remove ', b58_address_remove, ' failed!'])}), 500
+        return json.jsonify({'result', ''.join(['remove ', b58_address_remove, ' failed!'])}), 500
 
 
 @app.route('/set_contract_address', methods=['POST'])
 def set_contract_address():
     contract_address = request.json.get('contract_address')
     oep4.set_contract_address(contract_address)
-    return jsonify({'result': contract_address}), 200
+    return json.jsonify({'result': contract_address}), 200
 
 
 @app.route('/change_net', methods=['POST'])
@@ -112,7 +111,7 @@ def change_net():
             sdk_rpc_address = sdk.get_rpc().addr
             if sdk_rpc_address != remote_rpc_address:
                 result = ''.join(['remote rpc address set failed. the rpc address now used is ', sdk_rpc_address])
-                return jsonify({'result': result}), 409
+                return json.jsonify({'result': result}), 409
     elif network_selected == 'TestNet':
         remote_rpc_address = 'http://polaris3.ont.io:20336'
         with app.app_context() as context:
@@ -120,7 +119,7 @@ def change_net():
             sdk_rpc_address = sdk.get_rpc().addr
             if sdk_rpc_address != remote_rpc_address:
                 result = ''.join(['remote rpc address set failed. the rpc address now used is ', sdk_rpc_address])
-                return jsonify({'result': result}), 409
+                return json.jsonify({'result': result}), 409
     elif network_selected == 'Localhost':
         remote_rpc_address = 'http://localhost:20336'
         with app.app_context() as context:
@@ -129,21 +128,21 @@ def change_net():
             sdk_rpc_address = sdk.get_rpc().addr
             if sdk_rpc_address != remote_rpc_address:
                 result = ''.join(['remote rpc address set failed. the rpc address now used is ', sdk_rpc_address])
-                return jsonify({'result': result}), 409
+                return json.jsonify({'result': result}), 409
             try:
                 sdk.rpc.get_version()
             except SDKException as e:
                 sdk.set_rpc(old_remote_rpc_address)
                 error_msg = 'Other Error, ConnectionError'
                 if error_msg in e.args[1]:
-                    return jsonify({'result': 'Connection to localhost node failed.'}), 400
+                    return json.jsonify({'result': 'Connection to localhost node failed.'}), 400
                 else:
-                    return jsonify({'result': e.args[1]}), 500
+                    return json.jsonify({'result': e.args[1]}), 500
     else:
-        return jsonify({'result': 'unsupported network.'}), 501
+        return json.jsonify({'result': 'unsupported network.'}), 501
     global oep4
     oep4 = sdk.neo_vm().oep4()
-    return jsonify({'result': 'succeed'}), 200
+    return json.jsonify({'result': 'succeed'}), 200
 
 
 @app.route('/getSmartContractEvent', methods=['POST'])
@@ -155,25 +154,25 @@ def get_smart_contract_event():
         result = event[event_info_select]
     except KeyError:
         result = ''
-    return jsonify({'result': result}), 200
+    return json.jsonify({'result': result}), 200
 
 
 @app.route('/getName')
 def get_name():
     name = oep4.get_name()
-    return jsonify({'result': name}), 200
+    return json.jsonify({'result': name}), 200
 
 
 @app.route('/getSymbol')
 def get_symbol():
     symbol = oep4.get_symbol()
-    return jsonify({'result': symbol}), 200
+    return json.jsonify({'result': symbol}), 200
 
 
 @app.route('/getDecimal')
 def get_decimal():
     decimal = oep4.get_decimal()
-    return jsonify({'result': decimal}), 200
+    return json.jsonify({'result': decimal}), 200
 
 
 @app.route('/transfer', methods=['POST'])
@@ -185,19 +184,26 @@ def transfer():
         b58_from_address = wallet_manager.get_default_account().get_address()
         from_acct = wallet_manager.get_account(b58_from_address, password)
     except IndexError:
-        return jsonify({'result': 'Please import an account'}), 400
+        return json.jsonify({'result': 'Please import an account'}), 400
     gas_limit = 20000000
     gas_price = 500
-    result = oep4.transfer(from_acct, b58_to_address, amount, from_acct, gas_limit, gas_price)
-    return jsonify({'result': result}), 200
+    tx_hash = oep4.transfer(from_acct, b58_to_address, amount, from_acct, gas_limit, gas_price)
+    return json.jsonify({'result': tx_hash}), 200
 
 
-@app.route('/multi_transfer', methods=['POST'])
+@app.route('/transfer_multi', methods=['POST'])
 def transfer_multi():
     transfer_array = request.json.get('transfer_array')
-    print(transfer_array)
-    tx_hash = ''
-    return jsonify({'result': tx_hash}), 200
+    password = 'password'
+    args = json.loads(transfer_array)
+    signers = list()
+    for item in args:
+        account = wallet_manager.get_account(item[0], password)
+        signers.append(account)
+    gas_limit = 20000000
+    gas_price = 500
+    tx_hash = oep4.transfer_multi(args, signers[0], signers, gas_limit, gas_price)
+    return json.jsonify({'result': tx_hash}), 200
 
 
 @app.route('/allowance', methods=['POST'])
@@ -205,7 +211,7 @@ def allowance():
     b58_owner_address = request.json.get('b58_owner_address')
     b58_spender_address = request.json.get('b58_spender_address')
     result = oep4.allowance(b58_owner_address, b58_spender_address)
-    return jsonify({'result': result}), 200
+    return json.jsonify({'result': result}), 200
 
 
 if __name__ == '__main__':

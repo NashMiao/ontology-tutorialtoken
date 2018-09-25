@@ -45,47 +45,51 @@ new Vue({
     methods: {
         async submitForm(formName) {
             if (formName === "multiTransferForm") {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        let from = this.multiTransferForm.fromAddressArray;
-                        let to = this.multiTransferForm.toAddressArray;
-                        let amount = this.multiTransferForm.amountArray;
-                        console.log(from);
-                        console.log(to);
-                        console.log(amount);
-                        console.log(from.length);
-                        console.log(to.length);
-                        console.log(amount.length);
-                        if (from.length !== to.length || from.length !== amount.length) {
-                            this.$message({
-                                message: 'Input mistake',
-                                type: 'error',
-                                duration: 2400
-                            });
-                            return
-                        }
-                        let transfer_array = [];
-                        for (index in this.multiTransferForm.fromAddressArray) {
-                            let transfer = [from[index], to[index].value, amount[index].value];
-                            transfer_array.push(transfer);
-                        }
-                        console.log(transfer_array);
-                        try {
-                            let multi_transfer_url = Flask.url_for('multi_transfer');
-                            let response = await
-                            axios.post(multi_transfer_url, {
-                                'transfer_array': JSON.parse(ransfer_array)
-                            });
-                            console.log(response);
-                        }
-                        catch (error) {
-                            console.log(error);
-                        }
-                    } else {
-                        console.log('error submit!!');
-                        return false;
+                let valid = await this.$refs[formName].validate();
+                if (valid) {
+                    let from = this.multiTransferForm.fromAddressArray;
+                    let to = this.multiTransferForm.toAddressArray;
+                    let amount = this.multiTransferForm.amountArray;
+                    if (from.length !== to.length || from.length !== amount.length) {
+                        this.$message({
+                            message: 'Input mistake',
+                            type: 'error',
+                            duration: 2400
+                        });
+                        return
                     }
-                });
+                    let transfer_array = [];
+                    for (index in this.multiTransferForm.fromAddressArray) {
+                        let transfer = [from[index], to[index].value, Number(amount[index].value)];
+                        transfer_array.push(transfer);
+                    }
+                    try {
+                        let transfer_multi_url = Flask.url_for('transfer_multi');
+                        let response = await axios.post(transfer_multi_url, {
+                            'transfer_array': JSON.stringify(transfer_array)
+                        });
+                        let tx_hash = response.data.result;
+                        if (tx_hash.length === 64) {
+                            this.$message({
+                                type: 'success',
+                                message: 'Transfer successfully： '.concat(tx_hash).concat('!'),
+                                duration: 2000
+                            });
+                        }
+                        else {
+                            this.$message({
+                                type: 'error',
+                                message: 'Transfer failed!',
+                                duration: 800
+                            });
+                        }
+                    }
+                    catch (error) {
+                        console.log(error);
+                    }
+                } else {
+                    console.log('error submit!!');
+                }
             }
         },
         resetMultiTransferForm(formName) {
