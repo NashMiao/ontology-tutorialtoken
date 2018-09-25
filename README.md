@@ -4,19 +4,19 @@
 
 1. Install Ontology Dapp Box.
 
-```bash
+```shell
 pip install OBox
 ```
 
 2. Install ontology-python-sdk
 
-```bash
+```shell
 pip install ontology-python-sdk
 ```
 
 3. Download the box. This also takes care of installing the necessary dependencies.
 
-```bash
+```shell
 OBox --install tutorialtoken
 ```
 
@@ -39,9 +39,18 @@ ctx = GetContext()
 ```python
 NAME = 'DXToken'
 SYMBOL = 'DX'
-DECIMAL = 8
+DECIMAL = 2
 FACTOR = 100000000
 OWNER = ToScriptHash("AUQ2cqRs2daQBqTFs6Zun8eYXRe4a9JZUC")
 TOTAL_AMOUNT = 1000000000
 ```
 
+Things to notice:
+
+- The `NAME` and `SYMBOL` variables give our token a unique identity.
+- The `DECIMAL` variable determines the degree to which this token can be subdivided. For our example we went with 2 decimal places, similar to dollars and cents.
+- The `TOTAL_AMOUNT` variable determines the number of tokens created when this contract is deployed. In this case, the number is arbitrary.
+
+3. Implement OEP4 interface
+
+According to[ OEP-Token-Standard](https://github.com/ontio/OEPs/blob/1d9234f2f09fbc0ef9bcf29b6cfca164ff356c52/OEP-4/) We need to add 10 interface for our Token.
