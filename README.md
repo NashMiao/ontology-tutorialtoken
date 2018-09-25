@@ -22,6 +22,7 @@
             - [Transfer](#transfer)
             - [TransferMulti](#transfermulti)
             - [TransferFrom](#transferfrom)
+        - [Run your DApp](#run-your-dapp)
 
 <!-- /TOC -->
 
@@ -51,22 +52,22 @@ Benefit from [Ontology Python Sdk](https://pypi.org/project/ontology-python-sdk/
 
 ### Unboxing the DApp
 
-Install ontology-python-sdk
-
-```shell
-pip install ontology-python-sdk
-```
-
 Install Ontology DApp Box.
 
 ```shell
 pip install OBox
 ```
 
-Download the box. This also takes care of installing the necessary dependencies.
+Download the DApp box.
 
 ```shell
 OBox --install tutorialtoken
+```
+
+Install the necessary dependencies.
+
+```shell
+pip install -r requirements.txt
 ```
 
 ### Creating Smart Contract
@@ -99,6 +100,11 @@ DECIMAL = 2
 FACTOR = 100000000
 OWNER = ToScriptHash("AUQ2cqRs2daQBqTFs6Zun8eYXRe4a9JZUC")
 TOTAL_AMOUNT = 1000000000
+
+SUPPLY_KEY = 'totoalSupply'
+
+TRANSFER_PREFIX = bytearray(b'\x01')
+APPROVE_PREFIX = bytearray(b'\x02 ')
 ```
 
 Things to notice:
@@ -106,6 +112,7 @@ Things to notice:
 - The `NAME` and `SYMBOL` variables give our token a unique identity.
 - The `DECIMAL` variable determines the degree to which this token can be subdivided. For our example we went with 2 decimal places, similar to dollars and cents.
 - The `TOTAL_AMOUNT` variable determines the number of tokens created when this contract is deployed. In this case, the number is arbitrary.
+- The `SUPPLY_KEY`, `TRANSFER_PREFIX` and `APPROVE_PREFIX` variable will be used in storage.
 
 ### Implement the Interface of OEP4 Contract
 
@@ -181,6 +188,8 @@ def BalanceOf(account):
 ### Support Transfer
 
 #### Transfer
+
+`CheckWitness` interface is used to verify operational permissions of account or contract. We don't want our tokens to be spent by others, so we need to verify operational permissions.
 
 ```python
 def Transfer(from_acct, to_acct, amount):
@@ -258,3 +267,6 @@ def TransferFrom(sender, from_acct, to_acct, amount):
     Notify(['transfer', from_acct, to_acct, amount])
     return True
 ```
+
+### Run your DApp
+
