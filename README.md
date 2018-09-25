@@ -14,8 +14,14 @@
             - [Get Parameters of the Token](#get-parameters-of-the-token)
                 - [Get Token Name](#get-token-name)
                 - [Get Token Symbol](#get-token-symbol)
+                - [Get Token Decimal](#get-token-decimal)
                 - [Get Token TotalSupply](#get-token-totalsupply)
             - [Initialize Token Parameter](#initialize-token-parameter)
+        - [Check Balance](#check-balance)
+        - [Support Transfer](#support-transfer)
+            - [Transfer](#transfer)
+            - [TransferMulti](#transfermulti)
+            - [TransferFrom](#transferfrom)
 
 <!-- /TOC -->
 
@@ -121,6 +127,13 @@ def Symbol():
     return SYMBOL
 ```
 
+##### Get Token Decimal
+
+```python
+def Decimal():
+    return DECIMAL
+```
+
 ##### Get Token TotalSupply
 
 The difference between the two following code is if you use `Get(ctx,SUPPLY_KEY)` to acquire the total supply of your OEP4 Token, you need to initialize the total supply by using `Put(ctx, SUPPLY_KEY, total)` operation.
@@ -139,6 +152,8 @@ def TotalSupply():
 
 In Ontology smart contract, `Notify()` is an  interface that used to send notifications (including socket notifications or rpc queries) to clients that are executing this smart contract.
 
+Therefore, if you want to record something public into the Ontology Blockchain, you can use the interface `Notify()`.
+
 ```python
 def Init():
     if Get(ctx, SUPPLY_KEY):
@@ -152,5 +167,94 @@ def Init():
         return True
 ```
 
-Therefore, if you want to record something public into the Ontology Blockchain, you can use the interface `Notify()`.
+**NOTE**: By the help of `Put(ctx, concat(TRANSFER_PREFIX, OWNER), total)`, we allot all token to onwer.
 
+### Check Balance
+
+We can maintain an account book in smart contract's storage context, by using `Put()`, `Get()` and allot an unique `key` for earch account.
+
+```python
+def BalanceOf(account):
+    return Get(ctx, concat(TRANSFER_PREFIX, account))
+```
+
+### Support Transfer
+
+#### Transfer
+
+```python
+def Transfer(from_acct, to_acct, amount):
+    if from_acct == to_acct:
+        return True
+    if amount == 0:
+        return True
+    if amount < 0:
+        return False
+    if CheckWitness(from_acct) == False:
+        return False
+    if len(to_acct) != 20:
+        return False
+    fromKey = concat(TRANSFER_PREFIX, from_acct)
+    fromBalance = Get(ctx, fromKey)
+    if fromBalance < amount:
+        return False
+    if fromBalance == amount:
+        Delete(ctx, fromKey)
+    else:
+        Put(ctx, fromKey, fromBalance - amount)
+
+    tokey = concat(TRANSFER_PREFIX, to_acct)
+    toBalance = Get(ctx, tokey)
+
+    Put(ctx, tokey, toBalance + amount)
+    Notify(['transfer', from_acct, to_acct, amount])
+    return True
+```
+
+#### TransferMulti
+
+```python
+def TransferMulti(args):
+    for p in (args):
+        if len(p) != 3:
+            return False
+        if Transfer(p[0], p[1], p[2]) == False:
+            raise Exception("TransferMulti failed!")
+    return True
+```
+
+#### TransferFrom
+
+```python
+def TransferFrom(sender, from_acct, to_acct, amount):
+    if amount < 0:
+        return False
+    if CheckWitness(sender) == False:
+        return False
+    if len(to_acct) != 20:
+        return False
+    appoveKey = concat(concat(APPROVE_PREFIX, from_acct), sender)
+    approvedAmount = Get(ctx, appoveKey)
+    if approvedAmount < amount:
+        return False
+    if approvedAmount == amount:
+        Delete(ctx, appoveKey)
+    else:
+        Put(ctx, appoveKey, approvedAmount - amount)
+
+    fromKey = concat(TRANSFER_PREFIX, from_acct)
+    fromBalance = Get(ctx, fromKey)
+    if fromBalance < amount:
+        return False
+    if fromBalance == amount:
+        Delete(ctx, fromKey)
+    else:
+        Put(ctx, fromKey, fromBalance - amount)
+
+    tokey = concat(TRANSFER_PREFIX, to_acct)
+    toBalance = Get(ctx, tokey)
+
+    Put(ctx, tokey, toBalance + amount)
+    Notify(['transfer', from_acct, to_acct, amount])
+    return True
+```
