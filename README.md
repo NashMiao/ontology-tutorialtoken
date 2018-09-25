@@ -20,9 +20,7 @@ Specifically, In OEP4, we need to implement the following interface for our OEP4
 | 10 | transfer_multi()   | transfer amount of token from multiple from-account to multiple to-account multiple times   |
 | 11 | transfer_from()    | allow spender to withdraw amount of oep4 token from from-account to to-account              |
 
-Benefit from [ontology-python-sdk](https://pypi.org/project/ontology-python-sdk/), we can easily calling OEP4 interface by Python.
-
-**NOTE**: If you want to know more details, you can read our [Ontology Python SDK API Reference](https://apidoc.ont.io/pythonsdk/#oep4).
+Benefit from [ontology-python-sdk](https://pypi.org/project/ontology-python-sdk/), we can easily calling OEP4 interface by Python. If you want to know more details, you can read our [Ontology Python SDK API Reference](https://apidoc.ont.io/pythonsdk/#oep4).
 
 ## Getting started
 
