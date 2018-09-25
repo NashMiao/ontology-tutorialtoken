@@ -3,7 +3,7 @@
     "version": "1.1",
     "createTime": "2018-09-21 15:00:26",
     "defaultOntid": "",
-    "defaultAccountAddress": "ANH5bHrrt111XwNEnuPZj6u95Dd6u7G4D6",
+    "defaultAccountAddress": "AazEvfQPcQ2GEFFPLF1ZLwQ7K5jDn81hve",
     "scrypt": {
         "n": 16384,
         "r": 8,
@@ -16,7 +16,7 @@
             "address": "ANH5bHrrt111XwNEnuPZj6u95Dd6u7G4D6",
             "algorithm": "ECDSA",
             "enc-alg": "aes-256-gcm",
-            "isDefault": true,
+            "isDefault": false,
             "key": "Ih3tQ374VT3/za62AErejYaKNRfy/3i7qBQ1MmCYLvhJUVSsHJO+7xTOm8KQjPvv",
             "label": "Account 1",
             "lock": false,
@@ -46,7 +46,7 @@
             "address": "Ad4H6AB3iY7gBGNukgBLgLiB6p3v627gz1",
             "algorithm": "ECDSA",
             "enc-alg": "aes-256-gcm",
-            "isDefault": true,
+            "isDefault": false,
             "key": "VhBB/CCy9ZndEJ6Q0Sd4mJaLEfcUOCOhj2DbK39PbH2IEI/LI410YzQ++DjsBCEU",
             "label": "Account 3",
             "lock": false,
@@ -61,7 +61,7 @@
             "address": "ARLvwmvJ38stT9MKD78YtpDak3MENZkoxF",
             "algorithm": "ECDSA",
             "enc-alg": "aes-256-gcm",
-            "isDefault": true,
+            "isDefault": false,
             "key": "7Y1ATvp7RMm0vhf9NRj+XT6JNUfUvuUhQ09LK1SZWNZhdE9agPW+7IA0kkL8OIFL",
             "label": "Account 4",
             "lock": false,
@@ -70,6 +70,21 @@
             },
             "salt": "Y2RjZGQwNzlkY2M0MjhhNw==",
             "publicKey": "025d1a383fb4b0f1d1610ff62e27908163730f338a022d1495ce75e486136fb57f",
+            "signatureScheme": "SHA256withECDSA"
+        },
+        {
+            "address": "APrhJ74gSJpWt9y8UmEHgNLobUbJSZ2K2T",
+            "algorithm": "ECDSA",
+            "enc-alg": "aes-256-gcm",
+            "isDefault": true,
+            "key": "kzyG/wDCaxEGJaCJMuwWgjs6tCpvEwd2CtSOf/qqow59IjZ/o6ZPYwk3+c8Yf48A",
+            "label": "New Account",
+            "lock": false,
+            "parameters": {
+                "curve": "P-256"
+            },
+            "salt": "OWY4YTVmNDdlYTM5ZGFhNQ==",
+            "publicKey": "0387e9d5024be87d736402ee730786dcffc185d3efc31707ddbf2bf615887b98db",
             "signatureScheme": "SHA256withECDSA"
         }
     ]
