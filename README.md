@@ -320,7 +320,11 @@ When you select this tab, you can see the following interface:
 
 - **Select Default Network**
 
+As an example, this DApp support main network(Main Network), test network(Polaris Test Network) and local network(Localhost 20336).
+
 ![selectNet1](img/selectNet1.png)
+
+If you connect to a new node successfully, you will receive the following message.
 
 ![selectNet2](img/selectNet2.png)
 
