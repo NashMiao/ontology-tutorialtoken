@@ -64,7 +64,7 @@ new Vue({
         }
     },
     methods: {
-        async submitForm(formName) {
+        async submitMultiTransferForm(formName) {
             if (formName === "multiTransferForm") {
                 let valid = await this.$refs[formName].validate();
                 if (valid) {
@@ -80,14 +80,39 @@ new Vue({
                         return
                     }
                     let transfer_array = [];
+                    let password_array = [];
                     for (index in this.multiTransferForm.fromAddressArray) {
+                        let password = await this.$prompt('Account Password', 'TransferMulti', {
+                            confirmButtonText: 'OK',
+                            cancelButtonText: 'Cancel',
+                            inputPattern: /\S{1,}/,
+                            inputErrorMessage: 'invalid password'
+                        });
+                        password = password.value;
                         let transfer = [from[index], to[index].value, Number(amount[index].value)];
                         transfer_array.push(transfer);
+                        password_array.push(password);
+                    }
+                    try {
+                        await this.$confirm('This will transfer token. Continue?', 'Warning', {
+                            confirmButtonText: 'Confirm',
+                            cancelButtonText: 'Cancel',
+                            type: 'warning',
+                            duration: 0
+                        });
+                    } catch (error) {
+                        this.$message({
+                            message: 'multi transfer canceled',
+                            type: 'warning',
+                            duration: 2400
+                        });
+                        return;
                     }
                     try {
                         let transfer_multi_url = Flask.url_for('transfer_multi');
                         let response = await axios.post(transfer_multi_url, {
-                            'transfer_array': JSON.stringify(transfer_array)
+                            'transfer_array': JSON.stringify(transfer_array),
+                            'password_array': JSON.stringify(password_array)
                         });
                         let tx_hash = response.data.result;
                         if (tx_hash.length === 64) {
@@ -592,6 +617,7 @@ new Vue({
         },
         approve() {
             console.log('TODO');
+
         },
         async createAccount() {
             let label = await this.$prompt('Account Label:', 'Import Account', {

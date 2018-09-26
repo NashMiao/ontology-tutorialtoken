@@ -212,10 +212,10 @@ def transfer():
 @app.route('/transfer_multi', methods=['POST'])
 def transfer_multi():
     transfer_array = request.json.get('transfer_array')
-    password = 'password'
+    password_array = request.json.get('password_array')
     args = json.loads(transfer_array)
     signers = list()
-    for item in args:
+    for (item, password) in zip(args, password_array):
         account = wallet_manager.get_account(item[0], password)
         signers.append(account)
     gas_limit = 20000000
