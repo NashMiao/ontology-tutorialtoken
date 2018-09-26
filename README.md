@@ -363,7 +363,7 @@ As an example, we query the `Notify` of this transaction, which contain the info
 
 ![transfer5](img/transfer5.png)
 
-In first `Notify`, the contract address `8eecb19cd0fd311119feeb02c424476396d95096` correspond to the OEP4 smart contract you are using.
+In first `Notify`, the contract address `8eecb19cd0fd311119feeb02c424476396d95096` correspond to the OEP4 smart contract you are using and the `States` information in it correspond to the parameters in your contract’s `Notify`.
 
 ```json
 [
@@ -386,6 +386,25 @@ In first `Notify`, the contract address `8eecb19cd0fd311119feeb02c424476396d9509
         ]
     }
 ]
+```
+
+Therefore, we have the following corresponding relation:
+
+- `7472616e73666572`: the string of `transfer` in the form of hexadecimal string, which can be decoded easily with the python code `bytes.fromhex('7472616e73666572').decode()`.
+
+- `4756c9dd829b2142883adbe1ae4f8689a1f673e9`: the address of send account in the form of hexadecimal string, which can be converted to base58 encode address easily with the python code `Address.b58decode('4756c9dd829b2142883adbe1ae4f8689a1f673e9').to_hex_str()`.
+
+- `ffe5182c75aa0ae2ede8b59aca857ea39666f1ff`: the address of receive account in the form of hexadecimal string.
+
+- '01': the amount token transfered in this transaction. If you want to convert it to int, you can use the following code:
+
+```python
+import binascii
+
+balance = '01'
+array = bytearray(binascii.a2b_hex(balance.encode('ascii')))
+array.reverse()
+balance = int(binascii.b2a_hex(array).decode('ascii'), 16)
 ```
 
 ### 5.3. Token TransferMulti
