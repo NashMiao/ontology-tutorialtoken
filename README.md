@@ -19,15 +19,15 @@
         - [Transfer](#transfer)
         - [TransferMulti](#transfermulti)
         - [TransferFrom](#transferfrom)
-    - [Run your DApp](#run-your-dapp)
-    - [Use your DApp](#use-your-dapp)
-        - [Information Query](#information-query)
-        - [Token Transfer](#token-transfer)
-        - [Token TransferMulti](#token-transfermulti)
-        - [Token Approve](#token-approve)
-        - [Token Allowance](#token-allowance)
-        - [Token TransferFrom](#token-transferfrom)
-        - [DApp Settings](#dapp-settings)
+- [Run your DApp](#run-your-dapp)
+- [Use your DApp](#use-your-dapp)
+    - [Information Query](#information-query)
+    - [Token Transfer](#token-transfer)
+    - [Token TransferMulti](#token-transfermulti)
+    - [Token Approve](#token-approve)
+    - [Token Allowance](#token-allowance)
+    - [Token TransferFrom](#token-transferfrom)
+    - [DApp Settings](#dapp-settings)
 
 <!-- /TOC -->
 
@@ -286,7 +286,7 @@ def TransferFrom(sender, from_acct, to_acct, amount):
     return True
 ```
 
-### Run your DApp
+## Run your DApp
 
 At this point, you can run the DApp in your browser:
 
@@ -300,9 +300,9 @@ python tutorial_token.py
 
 ![Token Dapp](img/DXTokenDapp.png)
 
-### Use your DApp
+## Use your DApp
 
-#### Information Query
+### Information Query
 
 As a tutorial project, we provide an example about how to query some basic information with the help of ontology-python-sdk.
 
@@ -324,17 +324,17 @@ In our tutorial project, you can query an OEP4 Token's decimals in the way of fo
 
 ![Token Decimals](img/tokenDecimals.png)
 
-#### Token Transfer
+### Token Transfer
 
-#### Token TransferMulti
+### Token TransferMulti
 
-#### Token Approve
+### Token Approve
 
-#### Token Allowance
+### Token Allowance
 
-#### Token TransferFrom
+### Token TransferFrom
 
-#### DApp Settings
+### DApp Settings
 
 When you select this tab, you can see the following interface:
 
