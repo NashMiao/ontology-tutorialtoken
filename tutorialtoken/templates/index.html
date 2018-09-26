@@ -68,43 +68,59 @@
         </el-tab-pane>
 
         <el-tab-pane label="Token Transfer">
-            <el-row :gutter="20">
-                <el-col :span="11">
-                    <div class="grid-content bg-purple-light">
-                        <el-row>
-                            <el-input
-                                    size="medium"
-                                    type="string"
-                                    placeholder="base58 encode address"
-                                    suffix-icon="el-icon-location"
-                                    v-model="inputTransferTo">
-                                <template slot="prepend">to</template>
-                            </el-input>
-                        </el-row>
-                    </div>
-                </el-col>
-                <el-col :span="10">
-                    <div class="grid-content bg-purple">
-                        <el-row>
-                            <el-input
-                                    size="medium"
-                                    type="number"
-                                    placeholder="the amount of oep4 token"
-                                    suffix-icon="el-icon-caret-right"
-                                    v-model="inputTransferAmount">
-                                <template slot="prepend">amount</template>
-                            </el-input>
-                        </el-row>
-                    </div>
-                </el-col>
-                <el-col :span="2">
-                    <div class="grid-content bg-purple">
-                        <el-row>
-                            <el-button type="primary" round @click="transfer">transfer</el-button>
-                        </el-row>
-                    </div>
-                </el-col>
-            </el-row>
+            <el-form
+                    :model="transferForm"
+                    :rules="transferFormRules"
+                    ref="transferForm"
+                    label-width="0px"
+                    class="demo-ruleForm">
+                <el-row :gutter="20">
+                    <el-col :span="11">
+                        <div class="grid-content bg-purple-light">
+                            <el-row>
+                                <el-form-item prop="inputTransferTo">
+                                    <el-input
+                                            size="medium"
+                                            type="string"
+                                            placeholder="base58 encode address"
+                                            suffix-icon="el-icon-location"
+                                            v-model="transferForm.inputTransferTo">
+                                        <template slot="prepend">to</template>
+                                    </el-input>
+                                </el-form-item>
+                            </el-row>
+                        </div>
+                    </el-col>
+                    <el-col :span="10">
+                        <div class="grid-content bg-purple">
+                            <el-row>
+                                <el-form-item prop="inputTransferAmount">
+                                    <el-input
+                                            size="medium"
+                                            type="number"
+                                            placeholder="the amount of oep4 token"
+                                            suffix-icon="el-icon-caret-right"
+                                            v-model="transferForm.inputTransferAmount">
+                                        <template slot="prepend">amount</template>
+                                    </el-input>
+                                </el-form-item>
+                            </el-row>
+                        </div>
+                    </el-col>
+                    <el-col :span="2">
+                        <div class="grid-content bg-purple">
+                            <el-row>
+                                <el-button
+                                        type="primary"
+                                        icon="el-icon-caret-right"
+                                        round @click="transfer">
+                                    transfer
+                                </el-button>
+                            </el-row>
+                        </div>
+                    </el-col>
+                </el-row>
+            </el-form>
         </el-tab-pane>
 
         <el-tab-pane label="Token TransferMulti">
@@ -179,7 +195,6 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
-
                 <el-form-item>
                     <el-row :gutter="20">
                         <el-col :span="8">
@@ -217,7 +232,7 @@
                                     type="string"
                                     placeholder="base58 encode address"
                                     suffix-icon="el-icon-location"
-                                    v-model="inputTransferTo">
+                                    v-model="inputApproveSpender">
                                 <template slot="prepend">spender</template>
                             </el-input>
                         </el-row>
@@ -231,7 +246,7 @@
                                     type="number"
                                     placeholder="the amount of oep4 token"
                                     suffix-icon="el-icon-caret-right"
-                                    v-model="inputTransferAmount">
+                                    v-model="inputApproveAmount">
                                 <template slot="prepend">amount</template>
                             </el-input>
                         </el-row>
@@ -287,7 +302,74 @@
             </el-row>
         </el-tab-pane>
         <el-tab-pane label="Token TransferFrom">
-            TransferFrom
+            <el-form
+                    :model="transferFromForm"
+                    ref="TransferFromForm"
+                    label-width="0px">
+                <el-row :gutter="20">
+                    <el-col :span="5">
+                        <el-form-item>
+                            <el-select
+                                    v-model="transferFromForm.spenderAddress"
+                                    clearable
+                                    size="medium"
+                                    placeholder="Select Spender Account">
+                                <el-option
+                                        v-for="spenderAddress in settingForm.accountOptions"
+                                        :key="spenderAddress.value"
+                                        :label="spenderAddress.label"
+                                        :value="spenderAddress.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item>
+                            <el-input
+                                    size="medium"
+                                    type="string"
+                                    placeholder="base58 encode address"
+                                    suffix-icon="el-icon-location"
+                                    v-model="transferFromForm.fromAddress">
+                                <template slot="prepend">From</template>
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item>
+                            <el-input
+                                    size="medium"
+                                    type="string"
+                                    placeholder="base58 encode address"
+                                    suffix-icon="el-icon-location"
+                                    v-model="transferFromForm.toAddress">
+                                <template slot="prepend">To</template>
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="7">
+                        <el-form-item>
+                            <el-col :span="17">
+                                <el-input
+                                        size="medium"
+                                        type="number"
+                                        placeholder="oep4 token"
+                                        v-model="transferFromForm.amount">
+                                    <template slot="prepend">Amount</template>
+                                </el-input>
+                            </el-col>
+                            <el-col :span="6">
+                                <el-button
+                                        round
+                                        type="success"
+                                        icon="el-icon-caret-right"
+                                        @click.prevent="transferFrom">
+                                </el-button>
+                            </el-col>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
         </el-tab-pane>
 
         <el-tab-pane label="DApp Settings">
@@ -341,18 +423,13 @@
                                 :show-close="false"
                                 :close-on-press-escape="false">
                             <div class="block" style="margin-bottom: 15px;">
-                                <el-row :gutter="5">
-                                    <el-col :span="4">
-                                        private key:&nbsp;
-                                    </el-col>
-                                    <el-col :span="18">
-                                        <el-input
-                                                v-model="newHexPrivateKey"
-                                                size="small"
-                                                :disabled="true">
-                                        </el-input>
-                                    </el-col>
-                                </el-row>
+                                <el-input
+                                        v-model="newHexPrivateKey"
+                                        size="small"
+                                        suffix-icon="el-icon-edit-outline"
+                                        :disabled="true">
+                                    <template slot="prepend">private key:</template>
+                                </el-input>
                             </div>
                             <span slot="footer" class="dialog-footer">
                             <el-button type="primary" @click="privateKeyDialogVisible = false">Confirm</el-button>

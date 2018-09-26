@@ -27,6 +27,7 @@
             - [Query Token Decimals](#query-token-decimals)
             - [Set DApp](#set-dapp)
             - [Select Default Account](#select-default-account)
+            - [Create Account](#create-account)
             - [Import Account](#import-account)
 
 <!-- /TOC -->
@@ -175,7 +176,7 @@ def TotalSupply():
 
 #### Initialize Token Parameter
 
-In Ontology smart contract, `Notify()` is an  interface that used to send notifications (including socket notifications or rpc queries) to clients that are executing this smart contract.
+In Ontology smart contract, `Notify()` is an interface that used to send notifications (including socket notifications or rpc queries) to clients that are executing this smart contract.
 
 Therefore, if you want to record something public into the Ontology Blockchain, you can use the interface `Notify()`.
 
@@ -323,6 +324,17 @@ python tutorial_token.py
 ![electDefaultAccount1](img/selectDefaultAccount1.png)
 
 ![selectDefaultAccount2](img/selectDefaultAccount2.png)
+
+
+#### Create Account
+
+![createAccount1](img/createAccount1.png)
+
+![createAccount2](img/createAccount2.png)
+
+![createAccount3](img/createAccount3.png)
+
+![createAccount4](img/createAccount4.png)
 
 #### Import Account
 

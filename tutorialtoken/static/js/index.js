@@ -7,12 +7,42 @@ new Vue({
             newHexPrivateKey: '',
             eventInfoSelect: '',
             eventKey: '',
-            inputTransferTo: '',
-            inputTransferAmount: '',
+            transferForm: {
+                inputTransferTo: '',
+                inputTransferAmount: '',
+            },
+            transferFormRules: {
+                inputTransferTo: [
+                    {required: true, message: 'To address can not be null', trigger: 'blur'},
+                    {min: 34, max: 34, message: 'The length of to address should be 34', trigger: 'blur'}
+                ],
+                inputTransferAmount: [
+                    {required: true, message: 'Transfer amount can not be null', trigger: 'blur'}
+                ]
+            },
+            inputApproveSpender: '',
+            inputApproveAmount: '',
             inputAllowanceOwner: '',
             inputAllowanceSpender: '',
             labelPosition: 'right',
             isSwitchToSettings: true,
+            transferFromForm: {
+                spenderAddress: '',
+                fromAddress: '',
+                toAddress: '',
+                amount: ''
+            },
+            multiTransferForm: {
+                toAddressArray: [{
+                    value: ''
+                }],
+                fromAddressArray: [{
+                    value: ''
+                }],
+                amountArray: [{
+                    value: ''
+                }]
+            },
             settingForm: {
                 networkOptions: [{
                     value: 'MainNet',
@@ -28,18 +58,7 @@ new Vue({
                 accountOptions: [],
                 accountSelected: [],
                 b58AddressSelected: ''
-            },
-            multiTransferForm: {
-                toAddressArray: [{
-                    value: ''
-                }],
-                fromAddressArray: [{
-                    value: ''
-                }],
-                amountArray: [{
-                    value: ''
-                }]
-            },
+            }
         }
     },
     methods: {
@@ -122,28 +141,37 @@ new Vue({
             });
         },
         async getName() {
-            let url = Flask.url_for("get_name");
-            let response = await axios.get(url);
-            this.$notify({
-                title: 'Token Name',
-                type: 'success',
-                message: response.data.result,
-                duration: 0
-            });
+            try {
+                let url = Flask.url_for("get_name");
+                let response = await axios.get(url);
+                this.$notify({
+                    title: 'Token Name',
+                    type: 'success',
+                    message: response.data.result,
+                    duration: 0
+                });
+            } catch (error) {
+                console.log(error);
+            }
         },
         async getSymbol() {
-            let url = Flask.url_for("get_symbol");
-            let response = await axios.get(url);
-            this.$notify({
-                title: 'Token Symbol',
-                type: 'success',
-                message: response.data.result,
-                duration: 0
-            })
+            try {
+                let url = Flask.url_for("get_symbol");
+                let response = await axios.get(url);
+                this.$notify({
+                    title: 'Token Symbol',
+                    type: 'success',
+                    message: response.data.result,
+                    duration: 0
+                });
+            }
+            catch (error) {
+                console.log(error);
+            }
         },
         async getDecimal() {
-            let url = Flask.url_for("get_decimal");
             try {
+                let url = Flask.url_for("get_decimal");
                 let response = await axios.get(url);
                 this.$notify({
                     title: "Token Decimals",
@@ -157,14 +185,14 @@ new Vue({
                     type: 'error',
                     message: 'query token decimals failed',
                     duration: 0
-                })
+                });
             }
         },
         async getAccounts() {
             let url = Flask.url_for('get_accounts');
             let response = await axios.get(url);
             this.settingForm.accountOptions = [];
-            for (i = 0; i < response.data.result.length; i++) {
+            for (let i = 0; i < response.data.result.length; i++) {
                 this.settingForm.accountOptions.push({
                     value: response.data.result[i].b58_address,
                     label: response.data.result[i].label
@@ -187,8 +215,64 @@ new Vue({
                 this.isSwitchToSettings = true;
                 await this.getAccounts();
             }
+            else if (tab.label === 'Token TransferFrom') {
+                this.isSwitchToSettings = true;
+                await this.getAccounts();
+            }
             else {
                 this.isSwitchToSettings = true;
+            }
+        },
+        async transferFrom() {
+            let password = '';
+            try {
+                password = await this.$prompt('Account Password', 'Transfer', {
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Cancel',
+                    inputPattern: /\S{1,}/,
+                    inputErrorMessage: 'invalid password'
+                });
+                password = password.value;
+                await this.$confirm('This will transfer token. Continue?', 'Warning', {
+                    confirmButtonText: 'Confirm',
+                    cancelButtonText: 'Cancel',
+                    type: 'warning',
+                    duration: 0
+                });
+            } catch (error) {
+                this.$message({
+                    message: 'transfer canceled',
+                    type: 'warning',
+                    duration: 800
+                });
+                return;
+            }
+            let transfer_from_url = Flask.url_for('transfer_from');
+            try {
+                let response = await axios.post(transfer_from_url, {
+                    password: password,
+                    b58_spender_address: this.transferFromForm.spenderAddress,
+                    b58_from_address: this.transferFromForm.fromAddress,
+                    b58_to_address: transferFromForm.toAddress,
+                    amount: this.transferFromForm.amount
+                });
+                let tx_hash = response.data.result;
+                if (tx_hash.length === 64) {
+                    this.$message({
+                        type: 'success',
+                        message: 'Transfer successfully： '.concat(tx_hash).concat('!'),
+                        duration: 2000
+                    });
+                }
+                else {
+                    this.$message({
+                        type: 'error',
+                        message: 'Transfer failed!',
+                        duration: 800
+                    });
+                }
+            } catch (error) {
+                console.log(error);
             }
         },
         async accountChange(value) {
@@ -254,27 +338,56 @@ new Vue({
                 });
             }
             catch (error) {
-                console.log(error);
-                // if (error.response.status === 409) {
-                //     this.$message({
-                //         message: error.response.data.result,
-                //         type: 'error',
-                //         duration: 2400
-                //     })
-                // }
+                if (error.response.status === 409) {
+                    this.$message({
+                        message: error.response.data.result,
+                        type: 'error',
+                        duration: 2400
+                    })
+                }
             }
         },
         async removeAccount() {
-            let password = await this.$prompt('Account Password', 'Remove Default Account', {
-                confirmButtonText: 'OK',
-                cancelButtonText: 'Cancel'
-            }).catch(() => {
-                this.$message.warning('Import canceled');
-            });
-            if (password === undefined) {
-                return;
+            let password = '';
+            try {
+                password = await this.$prompt('Account Password', 'Remove Default Account', {
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Cancel',
+                    inputPattern: /\S{1,}/,
+                    inputErrorMessage: 'invalid password'
+                });
+                password = password.value;
+            } catch (error) {
+                this.$message({
+                    message: 'remove account canceled',
+                    type: 'warning',
+                    duration: 800
+                });
             }
-            console.log("TODO");
+            try {
+                let remove_account_url = Flask.url_for('remove_account');
+                let response = await axios.post(remove_account_url, {
+                    password: password,
+                    b58_address_remove: this.settingForm.accountSelected[0],
+                });
+                await this.getAccounts();
+                if (this.settingForm.accountSelected.length === 0 && this.settingForm.accountOptions.length !== 0) {
+                    let firstB58Address = this.settingForm.accountOptions[0].value;
+                    this.settingForm.accountSelected = [firstB58Address];
+                    this.settingForm.b58AddressSelected = firstB58Address;
+                }
+                this.$message.success({
+                    message: response.data.result,
+                    duration: 2400
+                });
+            } catch (error) {
+                this.$message({
+                    message: error.response.data.result,
+                    type: 'error',
+                    duration: 2400
+                })
+            }
+            console.log(response);
         },
         async networkChange(value) {
             let msg = '';
@@ -345,84 +458,70 @@ new Vue({
                 }
             }
         },
-        transfer() {
-            let url = Flask.url_for("transfer");
-            let self = this;
-            if (self.inputTransferTo.length === 34) {
-                if (self.inputTransferAmount > 0) {
-                    self.$confirm('This will transfer token. Continue?', 'Warning', {
+        async transfer() {
+            if (this.transferForm.inputTransferAmount > 0) {
+                let password = '';
+                try {
+                    password = await this.$prompt('Account Password', 'Transfer', {
+                        confirmButtonText: 'OK',
+                        cancelButtonText: 'Cancel',
+                        inputPattern: /\S{1,}/,
+                        inputErrorMessage: 'invalid password'
+                    });
+                    password = password.value;
+                    await this.$confirm('This will transfer token. Continue?', 'Warning', {
                         confirmButtonText: 'Confirm',
                         cancelButtonText: 'Cancel',
                         type: 'warning',
                         duration: 0
-                    }).then(() => {
-                            axios.post(url, {
-                                b58_to_address: self.inputTransferTo,
-                                amount: self.inputTransferAmount
-                            }).then(function (response) {
-                                let tx_hash = response.data.result;
-                                if (tx_hash.length === 64) {
-                                    self.$message({
-                                        type: 'success',
-                                        message: 'Transfer successfully： '.concat(tx_hash).concat('!'),
-                                        duration: 2000
-                                    });
-                                }
-                                else {
-                                    self.$message({
-                                        type: 'error',
-                                        message: 'Transfer failed!',
-                                        duration: 800
-                                    });
-                                }
-                            }).catch(error => {
-                                if (error.response.status === 400) {
-                                    self.$notify({
-                                        title: ''
-                                    })
-                                }
-                            });
-                        }
-                    ).catch(() => {
-                        self.$message({
-                            message: '已取消转账',
-                            type: 'warning',
+                    });
+                } catch (error) {
+                    this.$message({
+                        message: 'transfer canceled',
+                        type: 'warning',
+                        duration: 800
+                    });
+                    return;
+                }
+                try {
+                    let url = Flask.url_for("transfer");
+                    let response = await axios.post(url, {
+                        password: password,
+                        b58_to_address: this.transferForm.inputTransferTo,
+                        amount: this.transferForm.inputTransferAmount
+                    });
+                    let tx_hash = response.data.result;
+                    if (tx_hash.length === 64) {
+                        this.$message({
+                            type: 'success',
+                            message: 'Transfer successfully： '.concat(tx_hash).concat('!'),
+                            duration: 2000
+                        });
+                    }
+                    else {
+                        this.$message({
+                            type: 'error',
+                            message: 'Transfer failed!',
                             duration: 800
                         });
-                    });
+                    }
+                } catch (error) {
+                    if (error.response.status === 400) {
+                        this.$notify({
+                            title: 'Transfer failed!',
+                            message: error.response.data.result,
+                            duration: 800
+                        })
+                    }
                 }
-                else if (self.inputTransferAmount === 0) {
-                    self.$notify({
-                        title: "Amount Error",
-                        type: 'warning',
-                        message: "Please input the amount value great than 0.",
-                        duration: 800
-                    })
-                }
-                else {
-                    self.$notify({
-                        title: "Amount Error",
-                        type: 'warning',
-                        message: "Please input the correct amount value.",
-                        duration: 800
-                    })
-                }
-            }
-            else if (self.inputTransferTo.length === 0) {
-                self.$notify({
-                    title: "Transfer Error",
-                    type: 'error',
-                    message: "Please input the address.",
-                    duration: 1200
-                })
             }
             else {
-                self.$notify({
-                    title: "Transfer Error",
-                    type: 'error',
-                    message: "Please input the correct base58 encode address.",
-                    duration: 1200
-                })
+                this.$notify({
+                    title: "Amount Error",
+                    type: 'warning',
+                    message: "Please input the amount value great than 0.",
+                    duration: 800
+                });
             }
         },
         async allowance() {
@@ -521,7 +620,7 @@ new Vue({
                 return;
             }
             if (this.eventKey.length === 0) {
-                self.$notify({
+                this.$notify({
                     title: 'TxHash Error',
                     type: 'error',
                     message: 'Please input TxHash',
@@ -531,31 +630,40 @@ new Vue({
             }
             if (this.eventKey.length === 64) {
                 let get_smart_contract_event_url = Flask.url_for("get_smart_contract_event");
-                let response = await axios.post(get_smart_contract_event_url, {
-                    tx_hash: self.eventKey,
-                    event_info_select: self.eventInfoSelect
-                });
-                let result = response.data.result;
-                if (result.length === 0) {
+                try {
+                    let response = await axios.post(get_smart_contract_event_url, {
+                        tx_hash: self.eventKey,
+                        event_info_select: self.eventInfoSelect
+                    });
+                    let result = response.data.result;
+                    if (result.length === 0) {
+                        this.$message({
+                            message: 'query failed!',
+                            type: 'error',
+                            duration: 800
+                        })
+                    }
+                    else {
+                        if (this.eventInfoSelect === 'Notify') {
+                            this.$alert(result, 'Query Result', {
+                                confirmButtonText: 'OK',
+                            });
+                        } else {
+                            this.$notify({
+                                title: 'Query Result',
+                                type: 'succeed',
+                                message: result,
+                                duration: 0
+                            });
+                        }
+                    }
+                }
+                catch (error) {
                     this.$message({
                         message: 'query failed!',
                         type: 'error',
                         duration: 800
-                    })
-                }
-                else {
-                    if (self.eventInfoSelect === 'Notify') {
-                        self.$alert(result, 'Query Result', {
-                            confirmButtonText: 'OK',
-                        })
-                    } else {
-                        self.$notify({
-                            title: 'Query Result',
-                            type: 'succeed',
-                            message: result,
-                            duration: 0
-                        })
-                    }
+                    });
                 }
             }
         },
