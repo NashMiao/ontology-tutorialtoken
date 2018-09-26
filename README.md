@@ -1,5 +1,7 @@
 # ontology-tutorialtoken
 
+![Architecture](img/ontology-tutorialtoken.svg)
+
 <!-- TOC -->
 
 - [1. Introduction](#1-introduction)
