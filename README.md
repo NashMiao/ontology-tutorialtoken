@@ -300,15 +300,23 @@ python tutorial_token.py
 
 #### Information Query
 
-1. **Query Token Name**
+As a tutorial project, we provide an example about how to query some basic information with the help of ontology-python-sdk.
+
+- **Query Token Name**
+
+In our tutorial project, you can query an OEP4 Token's name in the way of following.
 
 ![Token Name](img/tokenName.png)
 
-2. **Query Token Symbol**
+- **Query Token Symbol**
+
+In our tutorial project, you can query an OEP4 Token's symbol in the way of following.
 
 ![Token Symbol](img/tokenSymbol.png)
 
-3. **Query Token Decimals**
+- **Query Token Decimals**
+
+In our tutorial project, you can query an OEP4 Token's decimals in the way of following.
 
 ![Token Decimals](img/tokenDecimals.png)
 
