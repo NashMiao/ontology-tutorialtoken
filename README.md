@@ -22,13 +22,14 @@
             - [TransferFrom](#transferfrom)
         - [Run your DApp](#run-your-dapp)
         - [Use your DApp](#use-your-dapp)
-            - [Query Token Name](#query-token-name)
-            - [Query Token Symbol](#query-token-symbol)
-            - [Query Token Decimals](#query-token-decimals)
+            - [Information Query](#information-query)
+                - [Query Token Name](#query-token-name)
+                - [Query Token Symbol](#query-token-symbol)
+                - [Query Token Decimals](#query-token-decimals)
             - [DApp Settings](#dapp-settings)
-            - [Select Default Account](#select-default-account)
-            - [Create Account](#create-account)
-            - [Import Account](#import-account)
+                - [Select Default Account](#select-default-account)
+                - [Create Account](#create-account)
+                - [Import Account](#import-account)
 
 <!-- /TOC -->
 
@@ -303,15 +304,17 @@ python tutorial_token.py
 
 ### Use your DApp
 
-#### Query Token Name
+#### Information Query
+
+##### Query Token Name
 
 ![Token Name](img/tokenName.png)
 
-#### Query Token Symbol
+##### Query Token Symbol
 
 ![Token Symbol](img/tokenSymbol.png)
 
-#### Query Token Decimals
+##### Query Token Decimals
 
 ![Token Decimals](img/tokenDecimals.png)
 
@@ -321,13 +324,13 @@ When you select this tab, you can see the following interface:
 
 ![Dapp Settings](img/dappSettings.png)
 
-#### Select Default Account
+##### Select Default Account
 
 ![electDefaultAccount1](img/selectDefaultAccount1.png)
 
 ![selectDefaultAccount2](img/selectDefaultAccount2.png)
 
-#### Create Account
+##### Create Account
 
 ![createAccount1](img/createAccount1.png)
 
@@ -337,7 +340,7 @@ When you select this tab, you can see the following interface:
 
 ![createAccount4](img/createAccount4.png)
 
-#### Import Account
+##### Import Account
 
 You should paste a private key string into the input box.
 
