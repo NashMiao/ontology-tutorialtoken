@@ -1,31 +1,31 @@
 # ontology-tutorialtoken
 
-<div align=center><img height="800" src="img/ontology-tutorialtoken.svg"/></div>
 <!-- TOC -->
 
 - [1. Introduction](#1-introduction)
-- [2. Setting up the development environment](#2-setting-up-the-development-environment)
-- [3. Getting started](#3-getting-started)
-    - [3.1. what's the OBox](#31-whats-the-obox)
-    - [3.2. Unboxing the DApp](#32-unboxing-the-dapp)
-    - [3.3. Creating Smart Contract](#33-creating-smart-contract)
-    - [3.4. Implement the Interface of OEP4 Contract](#34-implement-the-interface-of-oep4-contract)
-        - [3.4.1. Support Getting the Parameters of Token](#341-support-getting-the-parameters-of-token)
-        - [3.4.2. Initialize Token Parameter](#342-initialize-token-parameter)
-    - [3.5. Support Check Balance](#35-support-check-balance)
-    - [3.6. Support Transfer](#36-support-transfer)
-        - [3.6.1. Transfer](#361-transfer)
-        - [3.6.2. TransferMulti](#362-transfermulti)
-        - [3.6.3. TransferFrom](#363-transferfrom)
-- [4. Run your DApp](#4-run-your-dapp)
-- [5. Use your DApp](#5-use-your-dapp)
-    - [5.1. Information Query](#51-information-query)
-    - [5.2. Token Transfer](#52-token-transfer)
-    - [5.3. Token TransferMulti](#53-token-transfermulti)
-    - [5.4. Token Approve](#54-token-approve)
-    - [5.5. Token Allowance](#55-token-allowance)
-    - [5.6. Token TransferFrom](#56-token-transferfrom)
-    - [5.7. DApp Settings](#57-dapp-settings)
+- [2. Architecture](#2-architecture)
+- [3. Setting up the development environment](#3-setting-up-the-development-environment)
+- [4. Getting started](#4-getting-started)
+    - [4.1. what's the OBox](#41-whats-the-obox)
+    - [4.2. Unboxing the DApp](#42-unboxing-the-dapp)
+    - [4.3. Creating Smart Contract](#43-creating-smart-contract)
+    - [4.4. Implement the Interface of OEP4 Contract](#44-implement-the-interface-of-oep4-contract)
+        - [4.4.1. Support Getting the Parameters of Token](#441-support-getting-the-parameters-of-token)
+        - [4.4.2. Initialize Token Parameter](#442-initialize-token-parameter)
+    - [4.5. Support Check Balance](#45-support-check-balance)
+    - [4.6. Support Transfer](#46-support-transfer)
+        - [4.6.1. Transfer](#461-transfer)
+        - [4.6.2. TransferMulti](#462-transfermulti)
+        - [4.6.3. TransferFrom](#463-transferfrom)
+- [5. Run your DApp](#5-run-your-dapp)
+- [6. Use your DApp](#6-use-your-dapp)
+    - [6.1. Information Query](#61-information-query)
+    - [6.2. Token Transfer](#62-token-transfer)
+    - [6.3. Token TransferMulti](#63-token-transfermulti)
+    - [6.4. Token Approve](#64-token-approve)
+    - [6.5. Token Allowance](#65-token-allowance)
+    - [6.6. Token TransferFrom](#66-token-transferfrom)
+    - [6.7. DApp Settings](#67-dapp-settings)
 
 <!-- /TOC -->
 
@@ -51,16 +51,20 @@ Specifically, In OEP4, we need to implement the following interface for our OEP4
 
 Benefit from [Ontology Python Sdk](https://pypi.org/project/ontology-python-sdk/), we can easily calling OEP4 interface by Python. If you want to know more details, you can read our [Ontology Python SDK API Reference](https://apidoc.ont.io/pythonsdk/#oep4).
 
-## 2. Setting up the development environment
+## 2. Architecture
+
+<div align=center><img height="800" src="img/ontology-tutorialtoken.svg"/></div>
+
+## 3. Setting up the development environment
 
 There are a few technical requirements before we start. Please install the following:
 
 - [Python 3.7](https://www.python.org/downloads/release/python-370/)
 - [Git](https://git-scm.com/)
 
-## 3. Getting started
+## 4. Getting started
 
-### 3.1. what's the OBox
+### 4.1. what's the OBox
 
 In the past, when we wanted to begin developing on Ontology Blockchain, the first question we may ask is, "Where do I start?".
 
@@ -70,7 +74,7 @@ OBox is an example Ontology application and/or boilerplate that puts complimenta
 
 Before we begin a wonderful journey, ensure you've installed the latest version of OBox before opening your first box.
 
-### 3.2. Unboxing the DApp
+### 4.2. Unboxing the DApp
 
 Install Ontology DApp Box.
 
@@ -96,7 +100,7 @@ Install the necessary dependencies.
 pip install -r requirements.txt
 ```
 
-### 3.3. Creating Smart Contract
+### 4.3. Creating Smart Contract
 
 With our front-end taken care of, we can focus on the `oep4_token` contract.
 
@@ -140,9 +144,9 @@ Things to notice:
 - The `TOTAL_AMOUNT` variable determines the number of tokens created when this contract is deployed. In this case, the number is arbitrary.
 - The `SUPPLY_KEY`, `TRANSFER_PREFIX` and `APPROVE_PREFIX` variable will be used in storage.
 
-### 3.4. Implement the Interface of OEP4 Contract
+### 4.4. Implement the Interface of OEP4 Contract
 
-#### 3.4.1. Support Getting the Parameters of Token
+#### 4.4.1. Support Getting the Parameters of Token
 
 Now, we want to get the parameters of the token, we can just return them.
 
@@ -182,7 +186,7 @@ def TotalSupply():
     return Get(ctx,SUPPLY_KEY)
 ```
 
-#### 3.4.2. Initialize Token Parameter
+#### 4.4.2. Initialize Token Parameter
 
 In Ontology smart contract, `Notify()` is an interface that used to send notifications (including socket notifications or rpc queries) to clients that are executing this smart contract.
 
@@ -203,7 +207,7 @@ def Init():
 
 **NOTE**: By the help of `Put(ctx, concat(TRANSFER_PREFIX, OWNER), total)`, we allot all token to onwer.
 
-### 3.5. Support Check Balance
+### 4.5. Support Check Balance
 
 We can maintain an account book in smart contract's storage context, by using `Put()`, `Get()` and allot an unique `key` for earch account.
 
@@ -212,9 +216,9 @@ def BalanceOf(account):
     return Get(ctx, concat(TRANSFER_PREFIX, account))
 ```
 
-### 3.6. Support Transfer
+### 4.6. Support Transfer
 
-#### 3.6.1. Transfer
+#### 4.6.1. Transfer
 
 `CheckWitness` interface is used to verify operational permissions of account or contract. We don't want our tokens to be spent by others, so we need to verify operational permissions.
 
@@ -247,7 +251,7 @@ def Transfer(from_acct, to_acct, amount):
     return True
 ```
 
-#### 3.6.2. TransferMulti
+#### 4.6.2. TransferMulti
 
 ```python
 def TransferMulti(args):
@@ -259,7 +263,7 @@ def TransferMulti(args):
     return True
 ```
 
-#### 3.6.3. TransferFrom
+#### 4.6.3. TransferFrom
 
 ```python
 def TransferFrom(sender, from_acct, to_acct, amount):
@@ -295,7 +299,7 @@ def TransferFrom(sender, from_acct, to_acct, amount):
     return True
 ```
 
-## 4. Run your DApp
+## 5. Run your DApp
 
 At this point, you can run the DApp in your browser:
 
@@ -309,9 +313,9 @@ python tutorial_token.py
 
 ![Token Dapp](img/DXTokenDapp.png)
 
-## 5. Use your DApp
+## 6. Use your DApp
 
-### 5.1. Information Query
+### 6.1. Information Query
 
 As a tutorial project, we provide an example about how to query some basic information with the help of ontology-python-sdk.
 
@@ -349,7 +353,7 @@ You can query the **OEP4 Token** balance of an account in the way of following.
 
 ![queryOep4Token](img/queryOep4Token.png)
 
-### 5.2. Token Transfer
+### 6.2. Token Transfer
 
 Before you transfer, you can check the account's balance which will receive the OEP4 Token.
 
@@ -421,7 +425,7 @@ balance = int(binascii.b2a_hex(array).decode('ascii'), 16)
 
 **NOTE**: Because of the existence of big-endian and little-endian, we need to swap the order of bytes.
 
-### 5.3. Token TransferMulti
+### 6.3. Token TransferMulti
 
 As a tutorial project, we provide an example about how to provide a user-friendly interface for user to use ouer TransferMulti interface in ontology-python-sdk.
 
@@ -439,13 +443,13 @@ A double check is necessary.
 
 ![transferMulti3](img/transferMulti3.png)
 
-### 5.4. Token Approve
+### 6.4. Token Approve
 
-### 5.5. Token Allowance
+### 6.5. Token Allowance
 
-### 5.6. Token TransferFrom
+### 6.6. Token TransferFrom
 
-### 5.7. DApp Settings
+### 6.7. DApp Settings
 
 When you select this tab, you can see the following interface:
 
