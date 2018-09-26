@@ -363,7 +363,7 @@ As an example, we query the `Notify` of this transaction, which contain the info
 
 ![transfer5](img/transfer5.png)
 
-In first `Notify`, the contract address `8eecb19cd0fd311119feeb02c424476396d95096` correspond to the OEP4 smart contract you are using and the `States` information in it correspond to the parameters in your contract’s `Notify`.
+In the first `Notify`, the contract address `8eecb19cd0fd311119feeb02c424476396d95096` correspond to the OEP4 smart contract you are using and the `States` information in it correspond to the parameters in your contract’s `Notify`.
 
 ```json
 [
