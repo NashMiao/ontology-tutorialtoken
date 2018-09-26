@@ -61,7 +61,7 @@ There are a few technical requirements before we start. Please install the follo
 
 ### 3.1. what's the OBox
 
-In the past, When we wanted to begin developing on Ontology Blockchain, the first question we may ask is, "Where do I start?". Now, we have a brief answer,  “Start from OBox”.
+In the past, when we wanted to begin developing on Ontology Blockchain, the first question we may ask is, "Where do I start?". Now, we have a brief answer,  “Start from OBox”.
 
 OBox is an example Ontology application and/or boilerplate that puts complimentary tools and libraries into a single, easily-downloadable package. Every ontology box comes with libraries and tools already preinstalled, code that uses those libraries and tools, external scripts (if necessary), as well as helpful README's and documentation. All ontology boxes are directly integrated into the OBox command line, and you need only type `OBox --install <box name>` to download and prepare your box of choice.
 
