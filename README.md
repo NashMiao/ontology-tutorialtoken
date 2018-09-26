@@ -63,7 +63,7 @@ There are a few technical requirements before we start. Please install the follo
 
 In the past, when we wanted to begin developing on Ontology Blockchain, the first question we may ask is, "Where do I start?".
 
-Now, we have a brief answer,  “Start from OBox”.
+Now, we have a brief answer, “Start from OBox”.
 
 OBox is an example Ontology application and/or boilerplate that puts complimentary tools and libraries into a single, easily-downloadable package. Every ontology box comes with libraries and tools already preinstalled, code that uses those libraries and tools, external scripts (if necessary), as well as helpful README's and documentation. All ontology boxes are directly integrated into the OBox command line, and you need only type `OBox --install <box name>` to download and prepare your box of choice.
 
@@ -430,7 +430,11 @@ As you can see, we provide a dynamic form in order to let user determine the com
 
 ![transferMulti1](img/transferMulti1.png)
 
+In our tutorial project, we need you to provide account's password for the basic security of your account. Because four sub-transaction in this multi transfer transaction, you need to provide four password correspond with `Account 1`, `Account 2`, `Account 3`, `Account 4`.
+
 ![transferMulti2](img/transferMulti2.png)
+
+A double check is necessary.
 
 ![transferMulti3](img/transferMulti3.png)
 
