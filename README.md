@@ -351,9 +351,42 @@ In our tutorial project, we need you to provide account's password for the basic
 
 ![transfer2](img/transfer2.png)
 
+As an tutorial project, we need you to confirm your transaction before send it network, because it involve to Token which is an important digital asset in Blockchain.
+
 ![transfer3](img/transfer3.png)
 
+As you can see, if everything goes smoothly, you will receive an hexadecimal TxHash, which you can used to query the information of your transaction.
+
 ![transfer4](img/transfer4.png)
+
+As an example, we query the `Notify` of this transaction, which contain the information of this OEP4 transaction.
+
+![transfer5](img/transfer5.png)
+
+In first `Notify`, the contract address `8eecb19cd0fd311119feeb02c424476396d95096` correspond to the OEP4 smart contract you are using.
+
+```json
+[
+    {
+        "ContractAddress":"8eecb19cd0fd311119feeb02c424476396d95096",
+        "States":[
+            "7472616e73666572",
+            "4756c9dd829b2142883adbe1ae4f8689a1f673e9",
+            "ffe5182c75aa0ae2ede8b59aca857ea39666f1ff",
+            "01"
+        ]
+    },
+    {
+        "ContractAddress":"0200000000000000000000000000000000000000",
+        "States":[
+            "transfer",
+            "ANH5bHrrt111XwNEnuPZj6u95Dd6u7G4D6",
+            "AFmseVrdL9f9oyCzZefL9tG6UbviEH9ugK",
+            10000000
+        ]
+    }
+]
+```
 
 ### 5.3. Token TransferMulti
 
