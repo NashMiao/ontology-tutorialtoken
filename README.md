@@ -318,6 +318,18 @@ When you select this tab, you can see the following interface:
 
 ![Dapp Settings](img/dappSettings.png)
 
+- **Select Default Network**
+
+![selectNet1](img/selectNet1.png)
+
+![selectNet2](img/selectNet2.png)
+
+If you want to connect to a local node, please make sure you have run it in your computer before you connect, or you will receive the following message.
+
+![selectNet3](img/selectNet3.png)
+
+For more details, you can visit [Ontology](https://github.com/ontio/ontology). 
+
 - **Select Default Account**
 
 ![electDefaultAccount1](img/selectDefaultAccount1.png)
