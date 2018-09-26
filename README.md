@@ -348,7 +348,7 @@ As a tutorial project, we provide an example about how to support multi wallet a
 
 ![electDefaultAccount1](img/selectDefaultAccount1.png)
 
-When the DApp start, it will read the wallet file in your computer, then initialize the wallet account for you.
+In our tutorial project, when the DApp start, it will read the wallet file in your computer, then initialize the wallet account for you.
 
 ![selectDefaultAccount2](img/selectDefaultAccount2.png)
 
@@ -356,7 +356,11 @@ When the DApp start, it will read the wallet file in your computer, then initial
 
 As a tutorial project, we provide an example about how to create new account in a DApp.
 
+In our tutorial project, you can input label for your account.
+
 ![createAccount1](img/createAccount1.png)
+
+In our tutorial project, you **must** set a password for your account. This password will used to encrypt and decrypt your account's private key, which is an basic way to protect account's security.
 
 ![createAccount2](img/createAccount2.png)
 
