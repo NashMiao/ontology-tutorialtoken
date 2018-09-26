@@ -336,7 +336,11 @@ For more details, you can visit [Ontology](https://github.com/ontio/ontology).
 
 - **Select Default Account**
 
+As an example, we support multi wallet account management.
+
 ![electDefaultAccount1](img/selectDefaultAccount1.png)
+
+When the DApp start, it will read the wallet file in your computer, then initialize the wallet account for you.
 
 ![selectDefaultAccount2](img/selectDefaultAccount2.png)
 
