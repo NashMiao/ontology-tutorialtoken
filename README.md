@@ -25,7 +25,7 @@
             - [Query Token Name](#query-token-name)
             - [Query Token Symbol](#query-token-symbol)
             - [Query Token Decimals](#query-token-decimals)
-            - [Set DApp](#set-dapp)
+            - [DApp Settings](#dapp-settings)
             - [Select Default Account](#select-default-account)
             - [Create Account](#create-account)
             - [Import Account](#import-account)
@@ -315,7 +315,9 @@ python tutorial_token.py
 
 ![Token Decimals](img/tokenDecimals.png)
 
-#### Set DApp
+#### DApp Settings
+
+When you select this tab, you can see the following interface:
 
 ![Dapp Settings](img/dappSettings.png)
 
@@ -324,7 +326,6 @@ python tutorial_token.py
 ![electDefaultAccount1](img/selectDefaultAccount1.png)
 
 ![selectDefaultAccount2](img/selectDefaultAccount2.png)
-
 
 #### Create Account
 
