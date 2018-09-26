@@ -318,13 +318,13 @@ When you select this tab, you can see the following interface:
 
 ![Dapp Settings](img/dappSettings.png)
 
-1. **Select Default Account**
+- **Select Default Account**
 
 ![electDefaultAccount1](img/selectDefaultAccount1.png)
 
 ![selectDefaultAccount2](img/selectDefaultAccount2.png)
 
-2. **Create Account**
+- **Create Account**
 
 ![createAccount1](img/createAccount1.png)
 
@@ -334,7 +334,7 @@ When you select this tab, you can see the following interface:
 
 ![createAccount4](img/createAccount4.png)
 
-3. **Import Account**
+- **Import Account**
 
 You should paste a private key string into the input box.
 
@@ -359,3 +359,11 @@ You can get your new account's base58 encode address in here:
 **NOTE**: The length of your hexadecimal private key should be 64. if you input an error private key, you will get a notify.
 
 ![invalidPrivateKe](img/invalidPrivateKey.png)
+
+- **Remove Account**
+
+![removeAccount1](img/removeAccount1.png)
+
+![removeAccount2](img/removeAccount2.png)
+
+![removeAccount3](img/removeAccount3.png)

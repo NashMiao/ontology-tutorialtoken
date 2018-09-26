@@ -376,8 +376,10 @@ new Vue({
                     this.settingForm.accountSelected = [firstB58Address];
                     this.settingForm.b58AddressSelected = firstB58Address;
                 }
-                this.$message.success({
+                console.log(response);
+                this.$message({
                     message: response.data.result,
+                    type: 'success',
                     duration: 2400
                 });
             } catch (error) {
@@ -387,7 +389,6 @@ new Vue({
                     duration: 2400
                 })
             }
-            console.log(response);
         },
         async networkChange(value) {
             let msg = '';
