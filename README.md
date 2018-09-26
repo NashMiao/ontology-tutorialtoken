@@ -1,6 +1,6 @@
 # ontology-tutorialtoken
 
-<div align=center><img height="1200" src="img/ontology-tutorialtoken.svg"/></div>
+<div align=center><img height="800" src="img/ontology-tutorialtoken.svg"/></div>
 <!-- TOC -->
 
 - [1. Introduction](#1-introduction)
