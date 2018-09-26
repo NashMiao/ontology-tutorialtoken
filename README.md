@@ -356,15 +356,27 @@ In our tutorial project, when the DApp start, it will read the wallet file in yo
 
 As a tutorial project, we provide an example about how to create new account in a DApp.
 
-In our tutorial project, you can input label for your account.
+In our tutorial project, you **must** input a label for your account, which is a basic way to help your identify different accounts.
 
 ![createAccount1](img/createAccount1.png)
+
+Therefore, if you not input a correct label, you will receive the following message.
+
+![createAccount5](img/createAccount5.png)
 
 In our tutorial project, you **must** set a password for your account. This password will used to encrypt and decrypt your account's private key, which is an basic way to protect account's security.
 
 ![createAccount2](img/createAccount2.png)
 
+Therefore, if you not input a correct password, you will receive the following message.
+
+![createAccount6](img/createAccount6.png)
+
+If everything goes smoothly, your will get a hexadecimal private key in message box like the following.
+
 ![createAccount3](img/createAccount3.png)
+
+Now, you can switch to your new accout.
 
 ![createAccount4](img/createAccount4.png)
 
@@ -374,19 +386,19 @@ You should paste a private key string into the input box.
 
 ![importAccount1](img/importAccount1.png)
 
-You can set a label for you account.
+In our tutorial project, you **must** input a label for your account, which is a basic way to help your identify different accounts.
 
 ![importAccount2](img/importAccount2.png)
 
-You should input a password for your account.
+In our tutorial project, you **must** set a password for your account. This password will used to encrypt and decrypt your account's private key, which is an basic way to protect account's security.
 
 ![importAccount3](img/importAccount3.png)
 
-If you import succeed, you can see your new account in Select's drop-down menu.
+In our tutorial project, if you import account by private key successfully, you can see your new account in drop-down menu.
 
 ![importAccount4](img/importAccount4.png)
 
-You can get your new account's base58 encode address in here:
+As a user, you can get your new account's base58 encode address in here:
 
 ![importAccount5](img/importAccount5.png)
 

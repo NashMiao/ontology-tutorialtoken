@@ -308,7 +308,7 @@ new Vue({
             }
             let label = await this.$prompt('Account Label:', 'Import Account', {
                 confirmButtonText: 'OK',
-                cancelButtonText: 'Cancel'
+                cancelButtonText: 'Cancel',
             }).catch(() => {
                 this.$message.warning('Import canceled');
             });
@@ -581,7 +581,9 @@ new Vue({
         async createAccount() {
             let label = await this.$prompt('Account Label:', 'Import Account', {
                 confirmButtonText: 'OK',
-                cancelButtonText: 'Cancel'
+                cancelButtonText: 'Cancel',
+                inputPattern: /\S{1,}/,
+                inputErrorMessage: 'invalid label'
             }).catch(() => {
                 this.$message.warning('Import canceled');
             });
@@ -590,7 +592,9 @@ new Vue({
             }
             let password = await this.$prompt('Account Password', 'Import Account', {
                 confirmButtonText: 'OK',
-                cancelButtonText: 'Cancel'
+                cancelButtonText: 'Cancel',
+                inputPattern: /\S{1,}/,
+                inputErrorMessage: 'invalid password'
             }).catch(() => {
                 this.$message.warning('Import canceled');
             });
