@@ -320,15 +320,15 @@ When you select this tab, you can see the following interface:
 
 - **Select Default Network**
 
-As an example, we support main network, test network and local network.
+As a tutorial project, we provide an example about how to support different network in a DApp, such as main network, test network and local network.
 
 ![selectNet1](img/selectNet1.png)
 
-If you connect to a new node successfully, you will receive the following message.
+In our tutorial project, if you connect to a new node successfully, you will receive the following message.
 
 ![selectNet2](img/selectNet2.png)
 
-If you want to connect to a local node, please make sure you have run it in your computer before you connect, or you will receive the following message.
+In our tutorial project, if you want to connect to a local node, please make sure you have run it in your computer before you connect, or you will receive the following message.
 
 ![selectNet3](img/selectNet3.png)
 
@@ -336,7 +336,7 @@ For more details, you can visit [Ontology](https://github.com/ontio/ontology).
 
 - **Select Default Account**
 
-As an example, we support multi wallet account management.
+As a tutorial project, we provide an example about how to support multi wallet account management in a DApp.
 
 ![electDefaultAccount1](img/selectDefaultAccount1.png)
 
@@ -345,6 +345,8 @@ When the DApp start, it will read the wallet file in your computer, then initial
 ![selectDefaultAccount2](img/selectDefaultAccount2.png)
 
 - **Create Account**
+
+As a tutorial project, we provide an example about how to create new account in a DApp.
 
 ![createAccount1](img/createAccount1.png)
 
