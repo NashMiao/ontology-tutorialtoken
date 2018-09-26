@@ -23,6 +23,11 @@
         - [Run your DApp](#run-your-dapp)
         - [Use your DApp](#use-your-dapp)
             - [Information Query](#information-query)
+            - [Token Transfer](#token-transfer)
+            - [Token TransferMulti](#token-transfermulti)
+            - [Token Approve](#token-approve)
+            - [Token Allowance](#token-allowance)
+            - [Token TransferFrom](#token-transferfrom)
             - [DApp Settings](#dapp-settings)
 
 <!-- /TOC -->
@@ -320,6 +325,16 @@ In our tutorial project, you can query an OEP4 Token's decimals in the way of fo
 
 ![Token Decimals](img/tokenDecimals.png)
 
+#### Token Transfer
+
+#### Token TransferMulti
+
+#### Token Approve
+
+#### Token Allowance
+
+#### Token TransferFrom
+
 #### DApp Settings
 
 When you select this tab, you can see the following interface:
@@ -410,8 +425,16 @@ Now, you can get your new account's base58 encode address in the following box.
 
 - **Remove Account**
 
+As a tutorial project, we provide an example about how to remove a account from a DApp based on ontology-python-sdk.
+
+In our tutorial project, you should provide a password to provide you have permission to manage this account.
+
 ![removeAccount1](img/removeAccount1.png)
 
+If everything goes smoothly, you will receive the following message.
+
 ![removeAccount2](img/removeAccount2.png)
+
+Now, the account is removed from the `Default Accout` drop-down menu and also with the wallet file.
 
 ![removeAccount3](img/removeAccount3.png)
