@@ -407,7 +407,19 @@ array.reverse()
 balance = int(binascii.b2a_hex(array).decode('ascii'), 16)
 ```
 
+**NOTE**: Because of the existence of big-endian and little-endian, we need to swap the order of bytes.
+
 ### 5.3. Token TransferMulti
+
+As a tutorial project, we provide an example about how to provide a user-friendly interface for user to use ouer TransferMulti interface in ontology-python-sdk.
+
+![transferMulti0](img/transferMulti0.png)
+
+![transferMulti1](img/transferMulti1.png)
+
+![transferMulti2](img/transferMulti2.png)
+
+![transferMulti3](img/transferMulti3.png)
 
 ### 5.4. Token Approve
 
