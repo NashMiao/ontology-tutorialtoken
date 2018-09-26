@@ -325,15 +325,15 @@ In our tutorial project, you can query an OEP4 Token's decimals in the way of fo
 
 As a tutorial project, we provide an example about how to query a account's balance, including ONT, ONG and OEP4 Token.
 
-In our tutorial project, you can query the **ONT** balance of an account.
+You can query the **ONT** balance of an account in the way of following.
 
 ![queryOntBalance](img/queryOntBalance.png)
 
-In our tutorial project, you can query the **ONG** balance of an account.
+You can query the **ONG** balance of an account in the way of following.
 
 ![queryOngBalance](img/queryOngBalance.png)
 
-In our tutorial project, you can query the **OEP4 Token** balance of an account.
+You can query the **OEP4 Token** balance of an account in the way of following.
 
 ![queryOep4Token](img/queryOep4Token.png)
 
