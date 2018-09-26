@@ -8,12 +8,9 @@
     - [3.1. Unboxing the DApp](#31-unboxing-the-dapp)
     - [3.2. Creating Smart Contract](#32-creating-smart-contract)
     - [3.3. Implement the Interface of OEP4 Contract](#33-implement-the-interface-of-oep4-contract)
-        - [3.3.1. Get Parameters of the Token](#331-get-parameters-of-the-token)
-            - [3.3.1.1. Get Token Symbol](#3311-get-token-symbol)
-            - [3.3.1.2. Get Token Decimal](#3312-get-token-decimal)
-            - [3.3.1.3. Get Token TotalSupply](#3313-get-token-totalsupply)
+        - [3.3.1. Support Getting the Parameters of Token](#331-support-getting-the-parameters-of-token)
         - [3.3.2. Initialize Token Parameter](#332-initialize-token-parameter)
-    - [3.4. Check Balance](#34-check-balance)
+    - [3.4. Support Check Balance](#34-support-check-balance)
     - [3.5. Support Transfer](#35-support-transfer)
         - [3.5.1. Transfer](#351-transfer)
         - [3.5.2. TransferMulti](#352-transfermulti)
@@ -133,32 +130,33 @@ Things to notice:
 
 ### 3.3. Implement the Interface of OEP4 Contract
 
-#### 3.3.1. Get Parameters of the Token
+#### 3.3.1. Support Getting the Parameters of Token
 
 Now, we want to get the parameters of the token, we can just return them.
 
-- Get Token Name
+- **Token Name**
 
 ```python
 def Name():
     return NAME
 ```
 
-##### 3.3.1.1. Get Token Symbol
+- **Token Symbol**
 
 ```python
 def Symbol():
     return SYMBOL
 ```
 
-##### 3.3.1.2. Get Token Decimal
+- **Token Decimal**
 
 ```python
 def Decimal():
     return DECIMAL
+    
 ```
 
-##### 3.3.1.3. Get Token TotalSupply
+- **Token Total Supply**
 
 The difference between the two following code is if you use `Get(ctx,SUPPLY_KEY)` to acquire the total supply of your OEP4 Token, you need to initialize the total supply by using `Put(ctx, SUPPLY_KEY, total)` operation.
 
@@ -193,7 +191,7 @@ def Init():
 
 **NOTE**: By the help of `Put(ctx, concat(TRANSFER_PREFIX, OWNER), total)`, we allot all token to onwer.
 
-### 3.4. Check Balance
+### 3.4. Support Check Balance
 
 We can maintain an account book in smart contract's storage context, by using `Put()`, `Get()` and allot an unique `key` for earch account.
 
@@ -322,6 +320,22 @@ In our tutorial project, you can query an OEP4 Token's symbol in the way of foll
 In our tutorial project, you can query an OEP4 Token's decimals in the way of following.
 
 ![Token Decimals](img/tokenDecimals.png)
+
+- **Query Balance**
+
+As a tutorial project, we provide an example about how to query a account's balance, including ONT, ONG and OEP4 Token.
+
+In our tutorial project, you can query the **ONT** balance of an account.
+
+![queryOntBalance](img/queryOntBalance.png)
+
+In our tutorial project, you can query the **ONG** balance of an account.
+
+![queryOngBalance](img/queryOngBalance.png)
+
+In our tutorial project, you can query the **OEP4 Token** balance of an account.
+
+![queryOep4Token](img/queryOep4Token.png)
 
 ### 5.2. Token Transfer
 

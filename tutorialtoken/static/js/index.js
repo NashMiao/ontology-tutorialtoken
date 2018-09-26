@@ -7,6 +7,8 @@ new Vue({
             newHexPrivateKey: '',
             eventInfoSelect: '',
             eventKey: '',
+            assetSelect: '',
+            assetKey: '',
             transferForm: {
                 inputTransferTo: '',
                 inputTransferAmount: '',
@@ -139,6 +141,19 @@ new Vue({
                 value: '',
                 key: now_time
             });
+        },
+        async queryBalance() {
+            let query_balance_url = Flask.url_for("query_balance");
+            let response = await axios.post(query_balance_url, {
+                b58_address: this.assetKey,
+                asset_select: this.assetSelect
+            });
+            this.$notify({
+                title: 'Query Success',
+                message: this.assetSelect.concat(' Balance: ', response.data.result),
+                type: 'success'
+            });
+            console.log(response);
         },
         async getName() {
             try {
@@ -637,8 +652,8 @@ new Vue({
                 let get_smart_contract_event_url = Flask.url_for("get_smart_contract_event");
                 try {
                     let response = await axios.post(get_smart_contract_event_url, {
-                        tx_hash: self.eventKey,
-                        event_info_select: self.eventInfoSelect
+                        tx_hash: this.eventKey,
+                        event_info_select: this.eventInfoSelect
                     });
                     let result = response.data.result;
                     if (result.length === 0) {
@@ -652,11 +667,12 @@ new Vue({
                         if (this.eventInfoSelect === 'Notify') {
                             this.$alert(result, 'Query Result', {
                                 confirmButtonText: 'OK',
+                                type: 'success'
                             });
                         } else {
                             this.$notify({
                                 title: 'Query Result',
-                                type: 'succeed',
+                                type: 'success',
                                 message: result,
                                 duration: 0
                             });

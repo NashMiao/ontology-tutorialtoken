@@ -176,6 +176,23 @@ def get_decimal():
     return json.jsonify({'result': decimal}), 200
 
 
+@app.route('/query_balance', methods=['POST'])
+def query_balance():
+    b58_address = request.json.get('b58_address')
+    asset_select = request.json.get('asset_select')
+    if asset_select == 'OEP4 Token':
+        balance = oep4.balance_of(b58_address)
+        return json.jsonify({'result': balance}), 200
+    elif asset_select == 'ONT':
+        balance = sdk.rpc.get_balance(b58_address)
+        return json.jsonify({'result': balance['ont']}), 200
+    elif asset_select == 'ONG':
+        balance = sdk.rpc.get_balance(b58_address)
+        return json.jsonify({'result': balance['ong']}), 200
+    else:
+        return json.jsonify({'result': 'query balance failed'}), 500
+
+
 @app.route('/transfer', methods=['POST'])
 def transfer():
     b58_to_address = request.json.get('b58_to_address')
@@ -184,11 +201,11 @@ def transfer():
     try:
         b58_from_address = wallet_manager.get_default_account().get_address()
         from_acct = wallet_manager.get_account(b58_from_address, password)
+        gas_limit = 20000000
+        gas_price = 500
+        tx_hash = oep4.transfer(from_acct, b58_to_address, amount, from_acct, gas_limit, gas_price)
     except IndexError:
         return json.jsonify({'result': 'Please import an account'}), 400
-    gas_limit = 20000000
-    gas_price = 500
-    tx_hash = oep4.transfer(from_acct, b58_to_address, amount, from_acct, gas_limit, gas_price)
     return json.jsonify({'result': tx_hash}), 200
 
 

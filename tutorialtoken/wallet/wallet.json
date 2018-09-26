@@ -16,7 +16,7 @@
             "address": "ANH5bHrrt111XwNEnuPZj6u95Dd6u7G4D6",
             "algorithm": "ECDSA",
             "enc-alg": "aes-256-gcm",
-            "isDefault": false,
+            "isDefault": true,
             "key": "Ih3tQ374VT3/za62AErejYaKNRfy/3i7qBQ1MmCYLvhJUVSsHJO+7xTOm8KQjPvv",
             "label": "Account 1",
             "lock": false,

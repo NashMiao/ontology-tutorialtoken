@@ -42,6 +42,25 @@
                 </el-row>
             </div>
 
+            <div style="margin-bottom: 15px;">
+                <el-row :gutter="20">
+                    <el-col :span="24">
+                        <el-input
+                                placeholder="Please input base58 encode address"
+                                type="string"
+                                v-model="assetKey"
+                                class="input-with-select">
+                            <el-select v-model="assetSelect" slot="prepend" placeholder="Select">
+                                <el-option label="ONT" value="ONT"></el-option>
+                                <el-option label="ONG" value="ONG"></el-option>
+                                <el-option label="OEP4 Token" value="OEP4 Token"></el-option>
+                            </el-select>
+                            <el-button slot="append" icon="el-icon-search" @click="queryBalance"></el-button>
+                        </el-input>
+                    </el-col>
+                </el-row>
+            </div>
+
             <el-row :gutter="20">
                 <el-col :span="8">
                     <div class="grid-content bg-purple">
