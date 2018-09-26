@@ -5,16 +5,17 @@
 - [1. Introduction](#1-introduction)
 - [2. Setting up the development environment](#2-setting-up-the-development-environment)
 - [3. Getting started](#3-getting-started)
-    - [3.1. Unboxing the DApp](#31-unboxing-the-dapp)
-    - [3.2. Creating Smart Contract](#32-creating-smart-contract)
-    - [3.3. Implement the Interface of OEP4 Contract](#33-implement-the-interface-of-oep4-contract)
-        - [3.3.1. Support Getting the Parameters of Token](#331-support-getting-the-parameters-of-token)
-        - [3.3.2. Initialize Token Parameter](#332-initialize-token-parameter)
-    - [3.4. Support Check Balance](#34-support-check-balance)
-    - [3.5. Support Transfer](#35-support-transfer)
-        - [3.5.1. Transfer](#351-transfer)
-        - [3.5.2. TransferMulti](#352-transfermulti)
-        - [3.5.3. TransferFrom](#353-transferfrom)
+    - [3.1. what's the OBox](#31-whats-the-obox)
+    - [3.2. Unboxing the DApp](#32-unboxing-the-dapp)
+    - [3.3. Creating Smart Contract](#33-creating-smart-contract)
+    - [3.4. Implement the Interface of OEP4 Contract](#34-implement-the-interface-of-oep4-contract)
+        - [3.4.1. Support Getting the Parameters of Token](#341-support-getting-the-parameters-of-token)
+        - [3.4.2. Initialize Token Parameter](#342-initialize-token-parameter)
+    - [3.5. Support Check Balance](#35-support-check-balance)
+    - [3.6. Support Transfer](#36-support-transfer)
+        - [3.6.1. Transfer](#361-transfer)
+        - [3.6.2. TransferMulti](#362-transfermulti)
+        - [3.6.3. TransferFrom](#363-transferfrom)
 - [4. Run your DApp](#4-run-your-dapp)
 - [5. Use your DApp](#5-use-your-dapp)
     - [5.1. Information Query](#51-information-query)
@@ -58,7 +59,15 @@ There are a few technical requirements before we start. Please install the follo
 
 ## 3. Getting started
 
-### 3.1. Unboxing the DApp
+### 3.1. what's the OBox
+
+In the past, When we wanted to begin developing on Ontology Blockchain, the first question we may ask is, "Where do I start?". Now, we have a brief answer,  “Start from OBox”.
+
+OBox is an example Ontology application and/or boilerplate that puts complimentary tools and libraries into a single, easily-downloadable package. Every ontology box comes with libraries and tools already preinstalled, code that uses those libraries and tools, external scripts (if necessary), as well as helpful README's and documentation. All ontology boxes are directly integrated into the OBox command line, and you need only type `OBox --install <box name>` to download and prepare your box of choice.
+
+Before we begin a wonderful journey, ensure you've installed the latest version of OBox before opening your first box.
+
+### 3.2. Unboxing the DApp
 
 Install Ontology DApp Box.
 
@@ -84,7 +93,7 @@ Install the necessary dependencies.
 pip install -r requirements.txt
 ```
 
-### 3.2. Creating Smart Contract
+### 3.3. Creating Smart Contract
 
 With our front-end taken care of, we can focus on the `oep4_token` contract.
 
@@ -128,9 +137,9 @@ Things to notice:
 - The `TOTAL_AMOUNT` variable determines the number of tokens created when this contract is deployed. In this case, the number is arbitrary.
 - The `SUPPLY_KEY`, `TRANSFER_PREFIX` and `APPROVE_PREFIX` variable will be used in storage.
 
-### 3.3. Implement the Interface of OEP4 Contract
+### 3.4. Implement the Interface of OEP4 Contract
 
-#### 3.3.1. Support Getting the Parameters of Token
+#### 3.4.1. Support Getting the Parameters of Token
 
 Now, we want to get the parameters of the token, we can just return them.
 
@@ -170,7 +179,7 @@ def TotalSupply():
     return Get(ctx,SUPPLY_KEY)
 ```
 
-#### 3.3.2. Initialize Token Parameter
+#### 3.4.2. Initialize Token Parameter
 
 In Ontology smart contract, `Notify()` is an interface that used to send notifications (including socket notifications or rpc queries) to clients that are executing this smart contract.
 
@@ -191,7 +200,7 @@ def Init():
 
 **NOTE**: By the help of `Put(ctx, concat(TRANSFER_PREFIX, OWNER), total)`, we allot all token to onwer.
 
-### 3.4. Support Check Balance
+### 3.5. Support Check Balance
 
 We can maintain an account book in smart contract's storage context, by using `Put()`, `Get()` and allot an unique `key` for earch account.
 
@@ -200,9 +209,9 @@ def BalanceOf(account):
     return Get(ctx, concat(TRANSFER_PREFIX, account))
 ```
 
-### 3.5. Support Transfer
+### 3.6. Support Transfer
 
-#### 3.5.1. Transfer
+#### 3.6.1. Transfer
 
 `CheckWitness` interface is used to verify operational permissions of account or contract. We don't want our tokens to be spent by others, so we need to verify operational permissions.
 
@@ -235,7 +244,7 @@ def Transfer(from_acct, to_acct, amount):
     return True
 ```
 
-#### 3.5.2. TransferMulti
+#### 3.6.2. TransferMulti
 
 ```python
 def TransferMulti(args):
@@ -247,7 +256,7 @@ def TransferMulti(args):
     return True
 ```
 
-#### 3.5.3. TransferFrom
+#### 3.6.3. TransferFrom
 
 ```python
 def TransferFrom(sender, from_acct, to_acct, amount):
@@ -414,6 +423,8 @@ balance = int(binascii.b2a_hex(array).decode('ascii'), 16)
 As a tutorial project, we provide an example about how to provide a user-friendly interface for user to use ouer TransferMulti interface in ontology-python-sdk.
 
 ![transferMulti0](img/transferMulti0.png)
+
+As you can see, we provide a dynamic form in order to let user determine the combination of send account and receive account in a multi-transfer transaction freely.
 
 ![transferMulti1](img/transferMulti1.png)
 
