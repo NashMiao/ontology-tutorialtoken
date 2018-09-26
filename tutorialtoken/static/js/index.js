@@ -293,8 +293,8 @@ new Vue({
                     password: password,
                     b58_spender_address: this.transferFromForm.spenderAddress,
                     b58_from_address: this.transferFromForm.fromAddress,
-                    b58_to_address: transferFromForm.toAddress,
-                    amount: this.transferFromForm.amount
+                    b58_to_address: this.transferFromForm.toAddress,
+                    amount: Number(this.transferFromForm.amount)
                 });
                 let tx_hash = response.data.result;
                 if (tx_hash.length === 64) {
@@ -588,15 +588,25 @@ new Vue({
                 try {
                     let url = Flask.url_for("allowance");
                     let response = await axios.post(url, {
-                        b58_owner_address: self.inputAllowanceOwner,
-                        b58_spender_address: self.inputAllowanceSpender
+                        b58_owner_address: this.inputAllowanceOwner,
+                        b58_spender_address: this.inputAllowanceSpender
                     });
-                    this.$notify({
-                        title: 'Allowance',
-                        type: 'success',
-                        message: response.data.result,
-                        duration: 0
-                    });
+                    if (response.data.result === 0) {
+                        this.$notify({
+                            title: 'Allowance',
+                            type: 'success',
+                            message: '0',
+                            duration: 0
+                        });
+                    }
+                    else {
+                        this.$notify({
+                            title: 'Allowance',
+                            type: 'success',
+                            message: response.data.result,
+                            duration: 0
+                        });
+                    }
                 } catch (error) {
                     this.$notify({
                         title: 'Allowance',
@@ -615,10 +625,31 @@ new Vue({
                 });
             }
         },
-        approve() {
-
-            this.inputApproveSpender
-            this.inputApproveAmount
+        async approve() {
+            let password = await this.$prompt('Account Password', 'Approve', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                inputPattern: /\S{1,}/,
+                inputErrorMessage: 'invalid password'
+            }).catch(() => {
+                this.$message.warning('Approve canceled');
+            });
+            try {
+                let approve_url = Flask.url_for('approve');
+                let response = await axios.post(approve_url, {
+                    'password': password.value,
+                    'b58_spender_address': this.inputApproveSpender,
+                    'amount': Number(this.inputApproveAmount)
+                });
+                let tx_hash = response.data.result;
+                this.$message({
+                    type: 'success',
+                    message: 'TxHash： '.concat(tx_hash).concat('!'),
+                    duration: 2000
+                });
+            } catch (error) {
+                console.log(error);
+            }
         },
         async createAccount() {
             let label = await this.$prompt('Account Label:', 'Import Account', {

@@ -445,9 +445,91 @@ A double check is necessary.
 
 ### 6.4. Token Approve
 
+As a tutorial project, we provide an example about how to query the allowance value which is defined in OEP4.
+
+At first, the allowance value of address `ARLvwmvJ38stT9MKD78YtpDak3MENZkoxF` from `ANH5bHrrt111XwNEnuPZj6u95Dd6u7G4D6` is equal to zero.
+
+![approve0](img/approve0.png)
+
+Now, we use `Account 1` to approve address `ARLvwmvJ38stT9MKD78YtpDak3MENZkoxF` to transfer 6 OEP4 Token from it, which base58 address is `ANH5bHrrt111XwNEnuPZj6u95Dd6u7G4D6`.
+
+![approve1](img/approve1.png)
+
+To confirm our approve transaction, we need to provide account's password, which is a basic way to prove we have permission to handle this account.
+
+![approve2](img/approve2.png)
+
+![approve3](img/approve3.png)
+
+![approve4](img/approve4.png)
+
+![approve5](img/approve5.png)
+
+```json
+[
+    {
+        "ContractAddress":"8eecb19cd0fd311119feeb02c424476396d95096",
+        "States":[
+            "617070726f7665",
+            "4756c9dd829b2142883adbe1ae4f8689a1f673e9",
+            "68f99c99e7173c243c0e2b3ba34010e4d3b09dce",
+            "06"
+        ]
+    },
+    {
+        "ContractAddress":"0200000000000000000000000000000000000000",
+        "States":[
+            "transfer",
+            "ANH5bHrrt111XwNEnuPZj6u95Dd6u7G4D6",
+            "AFmseVrdL9f9oyCzZefL9tG6UbviEH9ugK",
+            10000000
+        ]
+    }
+]
+```
+
 ### 6.5. Token Allowance
 
+![Allowance](img/allowance.png)
+
 ### 6.6. Token TransferFrom
+
+![transferFrom0](img/transferFrom0.png)
+
+![transferFrom1](img/transferFrom1.png)
+
+![transferFrom2](img/transferFrom2.png)
+
+![transferFrom3](img/transferFrom3.png)
+
+![transferFrom4](img/transferFrom4.png)
+
+![transferFrom5](img/transferFrom5.png)
+
+![transferFrom6](img/transferFrom6.png)
+
+```json
+[
+    {
+        "ContractAddress":"8eecb19cd0fd311119feeb02c424476396d95096",
+        "States":[
+            "7472616e73666572",
+            "4756c9dd829b2142883adbe1ae4f8689a1f673e9",
+            "68f99c99e7173c243c0e2b3ba34010e4d3b09dce",
+            "02"
+        ]
+    },
+    {
+        "ContractAddress":"0200000000000000000000000000000000000000",
+        "States":[
+            "transfer",
+            "AazEvfQPcQ2GEFFPLF1ZLwQ7K5jDn81hve",
+            "AFmseVrdL9f9oyCzZefL9tG6UbviEH9ugK",
+            10000000
+        ]
+    }
+]
+```
 
 ### 6.7. DApp Settings
 

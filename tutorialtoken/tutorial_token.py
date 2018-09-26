@@ -18,6 +18,8 @@ sdk = OntologySdk()
 sdk.set_rpc(app.config['DEFAULT_REMOTE_RPC_ADDRESS'])
 oep4 = sdk.neo_vm().oep4()
 oep4.set_contract_address(app.config['DEFAULT_CONTRACT_ADDRESS'])
+gas_price = app.config['GAS_PRICE']
+gas_limit = app.config['GAS_LIMIT']
 wallet_manager = WalletManager()
 wallet_path = os.path.join(os.getcwd(), 'wallet', 'wallet.json')
 if os.path.isfile(wallet_path):
@@ -201,8 +203,6 @@ def transfer():
     try:
         b58_from_address = wallet_manager.get_default_account().get_address()
         from_acct = wallet_manager.get_account(b58_from_address, password)
-        gas_limit = 20000000
-        gas_price = 500
         tx_hash = oep4.transfer(from_acct, b58_to_address, amount, from_acct, gas_limit, gas_price)
     except IndexError:
         return json.jsonify({'result': 'Please import an account'}), 400
@@ -218,9 +218,21 @@ def transfer_multi():
     for (item, password) in zip(args, password_array):
         account = wallet_manager.get_account(item[0], password)
         signers.append(account)
-    gas_limit = 20000000
-    gas_price = 500
     tx_hash = oep4.transfer_multi(args, signers[0], signers, gas_limit, gas_price)
+    return json.jsonify({'result': tx_hash}), 200
+
+
+@app.route('/approve', methods=['POST'])
+def approve():
+    password = request.json.get('password')
+    b58_spender_address = request.json.get('b58_spender_address')
+    amount = request.json.get('amount')
+    try:
+        b58_from_address = wallet_manager.get_default_account().get_address()
+        default_acct = wallet_manager.get_account(b58_from_address, password)
+        tx_hash = oep4.approve(default_acct, b58_spender_address, amount, default_acct, gas_limit, gas_price)
+    except IndexError:
+        return json.jsonify({'result': 'Please import an account'}), 400
     return json.jsonify({'result': tx_hash}), 200
 
 
@@ -228,11 +240,11 @@ def transfer_multi():
 def transfer_from():
     password = request.json.get('password')
     b58_spender_address = request.json.get('b58_spender_address')
-    b58_from_address = request.json.get('b58_from_address');
+    b58_from_address = request.json.get('b58_from_address')
     b58_to_address = request.json.get('b58_to_address')
     amount = int(request.json.get('amount'))
     spender = wallet_manager.get_account(b58_spender_address, password)
-    tx_hash = oep4.transfer_from(spender, b58_from_address, b58_to_address, amount)
+    tx_hash = oep4.transfer_from(spender, b58_from_address, b58_to_address, amount, spender, gas_limit, gas_price)
     return json.jsonify({'result': tx_hash}), 200
 
 
