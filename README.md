@@ -339,6 +339,22 @@ You can query the **OEP4 Token** balance of an account in the way of following.
 
 ### 5.2. Token Transfer
 
+Before you transfer, you can check the account's balance which will receive the OEP4 Token.
+
+![transfer0](img/transfer0.png)
+
+You can paste an base58 encode address and input a value you want to transfer.
+
+![transfer1](img/transfer1.png)
+
+In our tutorial project, we need you to provide account's password for the basic security of your account.
+
+![transfer2](img/transfer2.png)
+
+![transfer3](img/transfer3.png)
+
+![transfer4](img/transfer4.png)
+
 ### 5.3. Token TransferMulti
 
 ### 5.4. Token Approve
