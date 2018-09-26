@@ -616,8 +616,9 @@ new Vue({
             }
         },
         approve() {
-            console.log('TODO');
 
+            this.inputApproveSpender
+            this.inputApproveAmount
         },
         async createAccount() {
             let label = await this.$prompt('Account Label:', 'Import Account', {
