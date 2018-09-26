@@ -382,9 +382,15 @@ Now, you can switch to your new accout.
 
 - **Import Account**
 
-You should paste a private key string into the input box.
+As a tutorial project, we provide an example about how to import a account into a DApp  based on hexadecimal private key.
+
+In our tutorial project, you should paste a private key string into the input box.
 
 ![importAccount1](img/importAccount1.png)
+
+**NOTE**: The length of your hexadecimal private key should be 64. if you input an error private key, you will get a notify.
+
+![invalidPrivateKe](img/invalidPrivateKey.png)
 
 In our tutorial project, you **must** input a label for your account, which is a basic way to help your identify different accounts.
 
@@ -398,13 +404,9 @@ In our tutorial project, if you import account by private key successfully, you 
 
 ![importAccount4](img/importAccount4.png)
 
-As a user, you can get your new account's base58 encode address in here:
+Now, you can get your new account's base58 encode address in the following box.
 
 ![importAccount5](img/importAccount5.png)
-
-**NOTE**: The length of your hexadecimal private key should be 64. if you input an error private key, you will get a notify.
-
-![invalidPrivateKe](img/invalidPrivateKey.png)
 
 - **Remove Account**
 
